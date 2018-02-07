@@ -1,5 +1,5 @@
 # Projet de géométrie numérique
 
-## [en construction]
+## liens utiles
 
-soon
+Utilisation Eigen : https://github.com/ihar/EigenPCA
