@@ -19,8 +19,11 @@ int main()
 {
     Mesh m;
 
+    // testing on a hand made cube
+    m.importOFF("../OFF/test.off");
+
     // reading test
-    m.importOFF("../OFF/block.off");
+    //m.importOFF("../OFF/block.off");
 
     // Gaussian curvature + writting in colors
     //m.applyGaussianCurvature();

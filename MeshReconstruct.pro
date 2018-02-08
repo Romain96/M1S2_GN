@@ -26,4 +26,5 @@ HEADERS += \
     Face.h \
     Mesh.h \
     HalfEdge.h \
-    PointDistances.h
+    PointDistances.h \
+    MeshReconstructor.h
