@@ -51,7 +51,10 @@ protected:
 
 public:
     // constructor(s)
-    Octree();
+    Octree();   // to create the root / initialize the class
+    // better suited to instanciate children (whose boundaries are known through the father's ones)
+    Octree(glm::vec3& lowerNW, glm::vec3& lowerNE, glm::vec3& lowerSW, glm::vec3& lowerSE,
+           glm::vec3& upperNW, glm::vec3& upperNE, glm::vec3& upperSW, glm::vec3& upperSE);
 
     // getter(s)
     glm::vec3& getBorderLowerNW();
@@ -73,26 +76,28 @@ public:
     Octree *getUpperSE();
 
     // setter(s)
-    void getBorderLowerNW(glm::vec3& v);
-    void getBorderLowerNE(glm::vec3& v);
-    void getBorderLowerSW(glm::vec3& v);
-    void getBorderLowerSE(glm::vec3& v);
-    void getBorderUpperNW(glm::vec3& v);
-    void getBorderUpperNE(glm::vec3& v);
-    void getBorderUpperSW(glm::vec3& v);
-    void getBorderUpperSE(glm::vec3& v);
+    void setBorderLowerNW(glm::vec3& v);
+    void setBorderLowerNE(glm::vec3& v);
+    void setBorderLowerSW(glm::vec3& v);
+    void setBorderLowerSE(glm::vec3& v);
+    void setBorderUpperNW(glm::vec3& v);
+    void setBorderUpperNE(glm::vec3& v);
+    void setBorderUpperSW(glm::vec3& v);
+    void setBorderUpperSE(glm::vec3& v);
 
-    void getLowerNW(Octree *t);
-    void getLowerNE(Octree *t);
-    void getLowerSW(Octree *t);
-    void getLowerSE(Octree *t);
-    void getUpperNW(Octree *t);
-    void getUpperNE(Octree *t);
-    void getUpperSW(Octree *t);
-    void getUpperSE(Octree *t);
+    void setLowerNW(Octree *t);
+    void setLowerNE(Octree *t);
+    void setLowerSW(Octree *t);
+    void setLowerSE(Octree *t);
+    void setUpperNW(Octree *t);
+    void setUpperNE(Octree *t);
+    void setUpperSW(Octree *t);
+    void setUpperSE(Octree *t);
 
     // method(s)
     bool leaf();
+    void setLeaf();
+    void setNotLeaf();
     void findSpaceBorders();
     void constructWithMinSize(float size);
     void constructWithIterations(int k);

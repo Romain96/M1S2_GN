@@ -19,16 +19,6 @@ int MeshReconstructor::_k = 2;
 // Constructor(s)
 //-----------------------------------------------------------------------------
 
-/**
- * @brief MeshReconstructor::MeshReconstructor
- * @param m a point cloud to reconstruct
- */
-MeshReconstructor::MeshReconstructor(Mesh m)
-{
-    _mesh = m;
-    _distances.setVertices(m.getVertices());
-}
-
 //-----------------------------------------------------------------------------
 // Getter(s)
 //-----------------------------------------------------------------------------
@@ -41,7 +31,3 @@ MeshReconstructor::MeshReconstructor(Mesh m)
 // Method(s)
 //-----------------------------------------------------------------------------
 
-void MeshReconstructor::computeCentroids()
-{
-    // TODO
-}

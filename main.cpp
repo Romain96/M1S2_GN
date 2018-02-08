@@ -23,8 +23,6 @@ int main()
     // testing on a hand made cube
     m.importOFF("../OFF/sphere.off");
 
-    MeshReconstructor mr(m);
-
     // reading test
     //m.importOFF("../OFF/block.off");
 

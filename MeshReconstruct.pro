@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     Face.cpp \
     Mesh.cpp \
     HalfEdge.cpp \
-    MeshReconstructor.cpp
+    MeshReconstructor.cpp \
+    Octree.cpp
 
 HEADERS += \
     Vertex.h \

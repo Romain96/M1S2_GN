@@ -15,7 +15,7 @@
 
 #include "Vertex.h"
 #include "Mesh.h"
-#include "PointDistances.h"
+#include "Octree.h"
 
 /**
  * @brief The MeshReconstructor class
@@ -27,7 +27,6 @@ private:
 
 protected:
     Mesh _mesh;
-    PointDistances _distances;
     std::vector<glm::vec3> _centroids;
     std::vector<glm::vec3> _normals;
     // TODO tangentPlanes
