@@ -137,14 +137,14 @@ void Mesh::importOFF(std::string filename)
     int vertices = 0;
     int faces = 0;
     int vertices_processed = 0;
-    int faces_processed = 0;
+    //int faces_processed = 0;
 
-    int vertices_per_face = 0;
+    //int vertices_per_face = 0;
     float x, y, z;
-    int vertexIndex = 0;
+    //int vertexIndex = 0;
 
     Vertex *vertex = nullptr;
-    Face *face = nullptr;
+    //Face *face = nullptr;
 
     std::string line;
 
