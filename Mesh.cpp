@@ -186,7 +186,7 @@ void Mesh::importOFF(std::string filename)
 
     std::cout << vertices_processed << " vertices processed." << std::endl;
 
-    // following y lines : faces index in format i1 i2 i3 (triangles)
+    /*// following y lines : faces index in format i1 i2 i3 (triangles)
     while (faces_processed < faces)
     {
         std::getline(input, line);
@@ -217,7 +217,7 @@ void Mesh::importOFF(std::string filename)
     // WARNING : experimental
     std::cout << "building Half Edge relations..." << std::endl;
     constructHalfEdgeMesh();
-    std::cout << "done !" << std::endl;
+    std::cout << "done !" << std::endl;*/
 
     // closing file
     input.close();
