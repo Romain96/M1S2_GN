@@ -19,7 +19,6 @@ SOURCES += main.cpp \
     Face.cpp \
     Mesh.cpp \
     HalfEdge.cpp \
-    PointDistances.cpp \
     MeshReconstructor.cpp
 
 HEADERS += \
@@ -27,5 +26,4 @@ HEADERS += \
     Face.h \
     Mesh.h \
     HalfEdge.h \
-    PointDistances.h \
     MeshReconstructor.h
