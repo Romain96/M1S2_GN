@@ -24,4 +24,5 @@ HEADERS += \
     Vertex.h \
     Face.h \
     Mesh.h \
-    HalfEdge.h
+    HalfEdge.h \
+    PointDistances.h

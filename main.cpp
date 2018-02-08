@@ -28,16 +28,16 @@ int main()
 
     // Laplacian smoothing test (base parameters are k = 1, lambda = 0.5
     m.setLaplacianIteration(25);
-    //m.laplacianSmoothing();
-    //m.exportWithColors("../OFF/block_laplacian.off");
+    m.laplacianSmoothing();
+    m.exportWithColors("../OFF/block_laplacian.off");
 
     // Taubin smoothing test (base parameters are k = 1, lambda = 0.5, mu = 0.52)
     //m.taubinSmoothing();
     //m.exportWithColors("../OFF/block_taubin.off");
 
     // Taubin smoothing with cotangent weights test
-    m.taubinSmoothingCotangent();
-    m.exportWithColors("../OFF/block_taubin_cotangent.off");
+    //m.taubinSmoothingCotangent();
+    //m.exportWithColors("../OFF/block_taubin_cotangent.off");
 
     // NOTE : fast way to visualize results : http://masc.cs.gmu.edu/wiki/ObjViewer
 
