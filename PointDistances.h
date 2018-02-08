@@ -23,6 +23,7 @@ protected:
 
 public:
     // constructor(s)
+    PointDistances();
     PointDistances(std::vector<Vertex *>& vertexList);
 
     // getter(s)
@@ -30,6 +31,7 @@ public:
     // setter(s)
 
     // method(s)
+    void setVertices(std::vector<Vertex *>& v);
     void constructDistanceTable(std::vector<Vertex *>& vertexList);
     float distance(int i, int j);
 };

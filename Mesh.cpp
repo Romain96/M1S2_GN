@@ -43,6 +43,15 @@ Mesh::Mesh() :
 //-----------------------------------------------------------------------------
 
 /**
+ * @brief Mesh::getVertices
+ * @return the vertices
+ */
+std::vector<Vertex *>& Mesh::getVertices()
+{
+    return _vertices;
+}
+
+/**
  * @brief Mesh::getVertex
  * @param i index of the Vertex to retrieve
  * @return a pointer to the desired Vertex (or null if outside of range)

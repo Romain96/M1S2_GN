@@ -12,6 +12,7 @@
 #include "Face.h"
 #include "HalfEdge.h"
 #include "Mesh.h"
+#include "MeshReconstructor.h"
 
 using namespace std;
 
@@ -20,7 +21,9 @@ int main()
     Mesh m;
 
     // testing on a hand made cube
-    m.importOFF("../OFF/test.off");
+    m.importOFF("../OFF/sphere.off");
+
+    MeshReconstructor mr(m);
 
     // reading test
     //m.importOFF("../OFF/block.off");

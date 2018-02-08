@@ -8,6 +8,11 @@
  * 2018-2019
  */
 
+#include "glm/glm.hpp"
+#include "glm/vec3.hpp"
+
+#include <vector>
+
 #include "Vertex.h"
 #include "Mesh.h"
 #include "PointDistances.h"
@@ -17,10 +22,15 @@
  */
 class MeshReconstructor
 {
+private:
+    static int _k;
+
 protected:
     Mesh _mesh;
     PointDistances _distances;
-    // TODO centroids, normals, tangentPlanes
+    std::vector<glm::vec3> _centroids;
+    std::vector<glm::vec3> _normals;
+    // TODO tangentPlanes
 
 public:
     // constructor(s)

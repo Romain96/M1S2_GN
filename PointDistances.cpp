@@ -21,6 +21,14 @@
 //-----------------------------------------------------------------------------
 
 /**
+ * @brief PointDistances::PointDistances
+ */
+PointDistances::PointDistances()
+{
+    // nothing
+}
+
+/**
  * @brief PointDistances::PointDistances builds the distance table
  * @param vertexList list of all vertices (point cloud)
  */
@@ -39,6 +47,7 @@ PointDistances::PointDistances(std::vector<Vertex *> &vertexList)
 // Getter(s)
 //-----------------------------------------------------------------------------
 
+
 //-----------------------------------------------------------------------------
 // Setter(s)
 //-----------------------------------------------------------------------------
@@ -46,6 +55,19 @@ PointDistances::PointDistances(std::vector<Vertex *> &vertexList)
 //-----------------------------------------------------------------------------
 // Method(s)
 //-----------------------------------------------------------------------------
+
+/**
+ * @brief PointDistances::setVertices
+ * @param v list of all vertices (point cloud)
+ */
+void PointDistances::setVertices(std::vector<Vertex *> &v)
+{
+    std::cout << "building distance table" << std::endl;
+
+    constructDistanceTable(v);
+
+    std::cout << "distance table built" << std::endl;
+}
 
 /**
  * @brief PointDistances::constructDistanceTable

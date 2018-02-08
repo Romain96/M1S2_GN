@@ -41,6 +41,7 @@ public:
     Mesh();
 
     // getters
+    std::vector<Vertex *>& getVertices();
     Vertex *getVertex(unsigned int i);
     Face *getFace(unsigned int i);
 
