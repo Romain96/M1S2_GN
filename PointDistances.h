@@ -19,7 +19,7 @@
 class PointDistances
 {
 protected:
-    std::map<int, std::pair<int, std::vector<Vertex *>>> _dist;
+    std::map<int, std::vector<float>> _dist;
 
 public:
     // constructor(s)
@@ -31,7 +31,7 @@ public:
 
     // method(s)
     void constructDistanceTable(std::vector<Vertex *>& vertexList);
-    void distance(int i, int j);
-}
+    float distance(int i, int j);
+};
 
 #endif // POINTDISTANCES_H

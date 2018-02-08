@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     Vertex.cpp \
     Face.cpp \
     Mesh.cpp \
-    HalfEdge.cpp
+    HalfEdge.cpp \
+    PointDistances.cpp
 
 HEADERS += \
     Vertex.h \

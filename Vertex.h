@@ -86,6 +86,8 @@ public:
 private:
     // methods
     static float barycentricArea(Vertex *v1, Vertex *v2, Vertex *v3);
+
+public:
     static float distance3(glm::vec3& v1, glm::vec3& v2);
 };
 
