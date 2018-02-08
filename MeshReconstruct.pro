@@ -26,4 +26,5 @@ HEADERS += \
     Face.h \
     Mesh.h \
     HalfEdge.h \
-    MeshReconstructor.h
+    MeshReconstructor.h \
+    Octree.h
