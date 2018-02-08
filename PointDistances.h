@@ -1,0 +1,4 @@
+#ifndef POINTDISTANCES_H
+#define POINTDISTANCES_H
+
+#endif // POINTDISTANCES_H
