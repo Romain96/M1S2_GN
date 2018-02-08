@@ -137,14 +137,14 @@ void Mesh::importOFF(std::string filename)
     int vertices = 0;
     int faces = 0;
     int vertices_processed = 0;
-    int faces_processed = 0;
+    //int faces_processed = 0;
 
-    int vertices_per_face = 0;
+    //int vertices_per_face = 0;
     float x, y, z;
-    int vertexIndex = 0;
+    //int vertexIndex = 0;
 
     Vertex *vertex = nullptr;
-    Face *face = nullptr;
+    //Face *face = nullptr;
 
     std::string line;
 
@@ -186,7 +186,7 @@ void Mesh::importOFF(std::string filename)
 
     std::cout << vertices_processed << " vertices processed." << std::endl;
 
-    // following y lines : faces index in format i1 i2 i3 (triangles)
+    /*// following y lines : faces index in format i1 i2 i3 (triangles)
     while (faces_processed < faces)
     {
         std::getline(input, line);
@@ -217,7 +217,7 @@ void Mesh::importOFF(std::string filename)
     // WARNING : experimental
     std::cout << "building Half Edge relations..." << std::endl;
     constructHalfEdgeMesh();
-    std::cout << "done !" << std::endl;
+    std::cout << "done !" << std::endl;*/
 
     // closing file
     input.close();
