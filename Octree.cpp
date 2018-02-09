@@ -400,3 +400,69 @@ void Octree::setUpperSE(Octree *t)
 //-----------------------------------------------------------------------------
 // Method(s)
 //-----------------------------------------------------------------------------
+
+/**
+ * @brief Octree::setLeaf warning deletes each children (but not recursively)
+ */
+void Octree::setLeaf()
+{
+    _isLeaf = true;
+
+    // deleting chidren recursively by calling Octree::deleteFromNode
+    Octree::deleteFromNode(_lowerNW);
+    Octree::deleteFromNode(_lowerNE);
+    Octree::deleteFromNode(_lowerSW);
+    Octree::deleteFromNode(_lowerSE);
+    Octree::deleteFromNode(_upperNW);
+    Octree::deleteFromNode(_upperNE);
+    Octree::deleteFromNode(_upperSW);
+    Octree::deleteFromNode(_upperSE);
+
+    _lowerNW = nullptr;
+    _lowerNE = nullptr;
+    _lowerSW = nullptr;
+    _lowerSE = nullptr;
+    _upperNW = nullptr;
+    _upperNE = nullptr;
+    _upperSW = nullptr;
+    _upperSE = nullptr;
+}
+
+/**
+ * @brief Octree::setNotLeaf warning the 8 pointers to children will still be null !
+ */
+void Octree::setNotLeaf()
+{
+    _isLeaf = false;
+}
+
+/**
+ * @brief Octree::leaf
+ * @return true if the current node is a leaf, false otherwise
+ */
+bool Octree::leaf()
+{
+    return _isLeaf;
+}
+
+void Octree::deleteFromNode(Octree *t)
+{
+    if (t->leaf())
+    {
+        delete t;
+    }
+    else
+    {
+        // deleting recursively each 8 children then the current node
+        Octree::deleteFromNode(t->getLowerNW());
+        Octree::deleteFromNode(t->getLowerNE());
+        Octree::deleteFromNode(t->getLowerSW());
+        Octree::deleteFromNode(t->getLowerSE());
+        Octree::deleteFromNode(t->getUpperNW());
+        Octree::deleteFromNode(t->getUpperNE());
+        Octree::deleteFromNode(t->getUpperSW());
+        Octree::deleteFromNode(t->getUpperSE());
+
+        delete t;
+    }
+}

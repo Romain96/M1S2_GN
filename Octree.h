@@ -98,6 +98,7 @@ public:
     bool leaf();
     void setLeaf();
     void setNotLeaf();
+    static void deleteFromNode(Octree *t);
     void findSpaceBorders();
     void constructWithMinSize(float size);
     void constructWithIterations(int k);
