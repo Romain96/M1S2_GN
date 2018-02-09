@@ -670,7 +670,7 @@ void Octree::__findPointsInRegion(Octree *t, std::vector<Vertex *>& vertives)
         pos = (*vertexIterator)->getPosition();
 
         if (pos.x >= t->getBorderLowerSW().x && pos.x <= t->getBorderLowerSE().x &&
-                pos.y >= t->getBorderLowerSE().y && pos.y <= t->getBorderUpperSE().y &&
+                pos.y >= t->getBorderLowerSE().y && pos.y <= t->getBorderLowerNE().y &&
                 pos.z >= t->getBorderLowerSE().z && pos.z <= t->getBorderUpperSE().z)
         {
             nb++;

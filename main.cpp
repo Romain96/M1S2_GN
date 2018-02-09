@@ -22,7 +22,7 @@ int main()
     Mesh m;
 
     // testing on a hand made cube
-    m.importOFF("../OFF/sphere.off");
+    m.importOFF("../OFF/block.off");
 
     // octree test
     Octree *t = new Octree();
