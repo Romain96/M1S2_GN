@@ -20,7 +20,10 @@
 // Constant(s)
 //-----------------------------------------------------------------------------
 
-
+float Octree::_minSize = 0.f;
+int Octree::_depth = 10;
+bool Octree::_depthTest = true;
+bool Octree::_sizeTest = false;
 
 //-----------------------------------------------------------------------------
 // Constructor(s)
@@ -82,7 +85,10 @@ Octree::Octree(glm::vec3 &lowerNW, glm::vec3 &lowerNE, glm::vec3 &lowerSW, glm::
     _upperSW(nullptr),
     _upperSE(nullptr)
 {
-
+    std::cout << "Octree dim (diagonal) is "
+              << _borderLowerSW.x << "," << _borderLowerSW.y << "," << _borderLowerSW.z
+              << " to "
+              << _borderUpperNE.x << "," << _borderUpperNE.y << "," << _borderUpperNE.z << std::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -529,7 +535,11 @@ void Octree::findSpaceBorders(std::vector<Vertex *> &vertices)
  */
 void Octree::constructWithMinSize(float size)
 {
-    // TODO
+    _minSize = size;
+    _depthTest = false;
+    _sizeTest = true;
+
+    Octree::__buildOctreeNode(this, 0);
 }
 
 /**
@@ -538,7 +548,11 @@ void Octree::constructWithMinSize(float size)
  */
 void Octree::constructWithIterations(int k)
 {
-    // TODO
+    _depth = k;
+    _depthTest = true;
+    _sizeTest = false;
+
+    Octree::__buildOctreeNode(this, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -548,9 +562,17 @@ void Octree::constructWithIterations(int k)
 /**
  * @brief Octree::__buildOctreeNode builds the children of the current node
  * @param t node to build
+ * @param depth
  */
-void Octree::__buildOctreeNode(Octree *t)
+void Octree::__buildOctreeNode(Octree *t, int depth)
 {
+    // halting condition is either a min size or a max depth to reach
+    if (_depthTest && depth >= _depth)
+        return;
+
+    if (_sizeTest && Vertex::distance3(t->getBorderUpperNE(), t->getBorderUpperNW()) <= _minSize)
+        return;
+
     // just dividing the region in 8 subregions (4 lower, 4 upper)
     t->setNotLeaf();
 
@@ -598,4 +620,14 @@ void Octree::__buildOctreeNode(Octree *t)
                              centerWestFace, center, centerSouthWestEdge, centerSouthFace));
     t->setLowerSE(new Octree(centerLowerFace, centerLowerEastEdge, centerLowerSouthEdge, t->getBorderLowerSE(),
                              center, centerEastFace, centerSouthFace, centerSouthEastEdge));
+
+    // recurvely calling the Octree creation on its 8 children
+    Octree::__buildOctreeNode(t->getLowerNW(), depth + 1);
+    Octree::__buildOctreeNode(t->getLowerNE(), depth + 1);
+    Octree::__buildOctreeNode(t->getLowerSW(), depth + 1);
+    Octree::__buildOctreeNode(t->getLowerSE(), depth + 1);
+    Octree::__buildOctreeNode(t->getUpperNW(), depth + 1);
+    Octree::__buildOctreeNode(t->getUpperNE(), depth + 1);
+    Octree::__buildOctreeNode(t->getUpperSW(), depth + 1);
+    Octree::__buildOctreeNode(t->getUpperSE(), depth + 1);
 }

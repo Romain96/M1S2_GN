@@ -49,6 +49,13 @@ protected:
     Octree *_upperSW;
     Octree *_upperSE;
 
+    // max number of iterations when creating the Octree (with iterations method)
+    static int _depth;
+    static bool _depthTest;
+    // min size of regions when creating the Octree (with min size method)
+    static float _minSize;
+    static bool _sizeTest;
+
 public:
     // constructor(s)
     Octree();   // to create the root / initialize the class
@@ -106,7 +113,7 @@ public:
 
 private:
     // internal method(s)
-    void __buildOctreeNode(Octree *t);
+    static void __buildOctreeNode(Octree *t, int depth);
     void __findPointsInRegion(Octree *t);
 };
 

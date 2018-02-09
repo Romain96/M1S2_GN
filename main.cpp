@@ -12,6 +12,7 @@
 #include "Face.h"
 #include "HalfEdge.h"
 #include "Mesh.h"
+#include "Octree.h"
 #include "MeshReconstructor.h"
 
 using namespace std;
@@ -22,6 +23,11 @@ int main()
 
     // testing on a hand made cube
     m.importOFF("../OFF/sphere.off");
+
+    // octree test
+    Octree *t = new Octree();
+    t->findSpaceBorders(m.getVertices());
+    t->constructWithIterations(2);
 
     // reading test
     //m.importOFF("../OFF/block.off");
