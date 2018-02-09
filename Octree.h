@@ -99,7 +99,7 @@ public:
     void setLeaf();
     void setNotLeaf();
     static void deleteFromNode(Octree *t);
-    void findSpaceBorders();
+    void findSpaceBorders(std::vector<Vertex *>& vertices);
     void constructWithMinSize(float size);
     void constructWithIterations(int k);
     std::vector<Vertex *>& findKNeartestNeighbours(Vertex *ref, int k);
