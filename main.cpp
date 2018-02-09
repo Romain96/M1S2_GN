@@ -27,7 +27,7 @@ int main()
     // octree test
     Octree *t = new Octree();
     t->findSpaceBorders(m.getVertices());
-    t->constructWithIterations(2);
+    t->constructWithIterations(2, m.getVertices());
 
     // reading test
     //m.importOFF("../OFF/block.off");

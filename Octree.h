@@ -56,6 +56,9 @@ protected:
     static float _minSize;
     static bool _sizeTest;
 
+    // points included in a leaf
+    std::vector<Vertex *>_points;
+
 public:
     // constructor(s)
     Octree();   // to create the root / initialize the class
@@ -107,14 +110,15 @@ public:
     void setNotLeaf();
     static void deleteFromNode(Octree *t);
     void findSpaceBorders(std::vector<Vertex *>& vertices);
-    void constructWithMinSize(float size);
-    void constructWithIterations(int k);
+    void constructWithMinSize(float size, std::vector<Vertex *>& vertices);
+    void constructWithIterations(int k, std::vector<Vertex *>& vertices);
     std::vector<Vertex *>& findKNeartestNeighbours(Vertex *ref, int k);
 
 private:
     // internal method(s)
-    static void __buildOctreeNode(Octree *t, int depth);
-    void __findPointsInRegion(Octree *t);
+    void addPoint(Vertex *v);
+    static void __buildOctreeNode(Octree *t, int depth, std::vector<Vertex *>& vertices);
+    static void __findPointsInRegion(Octree *t, std::vector<Vertex *>& vertives);
 };
 
 #endif // OCTREE_H

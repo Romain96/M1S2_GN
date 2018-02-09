@@ -49,7 +49,8 @@ Octree::Octree() :
     _upperNW(nullptr),
     _upperNE(nullptr),
     _upperSW(nullptr),
-    _upperSE(nullptr)
+    _upperSE(nullptr),
+    _points()
 {
     // nothing
 }
@@ -83,7 +84,8 @@ Octree::Octree(glm::vec3 &lowerNW, glm::vec3 &lowerNE, glm::vec3 &lowerSW, glm::
     _upperNW(nullptr),
     _upperNE(nullptr),
     _upperSW(nullptr),
-    _upperSE(nullptr)
+    _upperSE(nullptr),
+    _points()
 {
     std::cout << "Octree dim (diagonal) is "
               << _borderLowerSW.x << "," << _borderLowerSW.y << "," << _borderLowerSW.z
@@ -408,6 +410,15 @@ void Octree::setUpperSE(Octree *t)
 //-----------------------------------------------------------------------------
 
 /**
+ * @brief Octree::addPoint adds a point to a node
+ * @param v the point to add
+ */
+void Octree::addPoint(Vertex *v)
+{
+    _points.push_back(v);
+}
+
+/**
  * @brief Octree::setLeaf warning deletes each children (but not recursively)
  */
 void Octree::setLeaf()
@@ -532,27 +543,29 @@ void Octree::findSpaceBorders(std::vector<Vertex *> &vertices)
 /**
  * @brief Octree::constructWithMinSize recursively construct the octree until the leaves have the given size
  * @param size minimum size the cube should reach
+ * @param vertices list of all vertices (point cloud)
  */
-void Octree::constructWithMinSize(float size)
+void Octree::constructWithMinSize(float size, std::vector<Vertex *> &vertices)
 {
     _minSize = size;
     _depthTest = false;
     _sizeTest = true;
 
-    Octree::__buildOctreeNode(this, 0);
+    Octree::__buildOctreeNode(this, 0, vertices);
 }
 
 /**
  * @brief Octree::constructWithIterations recursively construct the octree for a depth of k
  * @param k depth of the tree (number of subdivisions of space)
+ * @param vertices list of all vertices (point cloud)
  */
-void Octree::constructWithIterations(int k)
+void Octree::constructWithIterations(int k, std::vector<Vertex *> &vertices)
 {
     _depth = k;
     _depthTest = true;
     _sizeTest = false;
 
-    Octree::__buildOctreeNode(this, 0);
+    Octree::__buildOctreeNode(this, 0, vertices);
 }
 
 //-----------------------------------------------------------------------------
@@ -563,12 +576,17 @@ void Octree::constructWithIterations(int k)
  * @brief Octree::__buildOctreeNode builds the children of the current node
  * @param t node to build
  * @param depth
+ * @param vertices
  */
-void Octree::__buildOctreeNode(Octree *t, int depth)
+void Octree::__buildOctreeNode(Octree *t, int depth, std::vector<Vertex *>& vertices)
 {
     // halting condition is either a min size or a max depth to reach
     if (_depthTest && depth >= _depth)
+    {
+        // finding all points in the current subregion
+        Octree::__findPointsInRegion(t ,vertices);
         return;
+    }
 
     if (_sizeTest && Vertex::distance3(t->getBorderUpperNE(), t->getBorderUpperNW()) <= _minSize)
         return;
@@ -622,12 +640,43 @@ void Octree::__buildOctreeNode(Octree *t, int depth)
                              center, centerEastFace, centerSouthFace, centerSouthEastEdge));
 
     // recurvely calling the Octree creation on its 8 children
-    Octree::__buildOctreeNode(t->getLowerNW(), depth + 1);
-    Octree::__buildOctreeNode(t->getLowerNE(), depth + 1);
-    Octree::__buildOctreeNode(t->getLowerSW(), depth + 1);
-    Octree::__buildOctreeNode(t->getLowerSE(), depth + 1);
-    Octree::__buildOctreeNode(t->getUpperNW(), depth + 1);
-    Octree::__buildOctreeNode(t->getUpperNE(), depth + 1);
-    Octree::__buildOctreeNode(t->getUpperSW(), depth + 1);
-    Octree::__buildOctreeNode(t->getUpperSE(), depth + 1);
+    Octree::__buildOctreeNode(t->getLowerNW(), depth + 1, vertices);
+    Octree::__buildOctreeNode(t->getLowerNE(), depth + 1, vertices);
+    Octree::__buildOctreeNode(t->getLowerSW(), depth + 1, vertices);
+    Octree::__buildOctreeNode(t->getLowerSE(), depth + 1, vertices);
+    Octree::__buildOctreeNode(t->getUpperNW(), depth + 1, vertices);
+    Octree::__buildOctreeNode(t->getUpperNE(), depth + 1, vertices);
+    Octree::__buildOctreeNode(t->getUpperSW(), depth + 1, vertices);
+    Octree::__buildOctreeNode(t->getUpperSE(), depth + 1, vertices);
+}
+
+/**
+ * @brief Octree::__findPointsInRegion find all points belonging to a node (leaf)
+ * @param t node of the Octree in which to store all points found
+ * @param vertives list of all vertices (point cloud)
+ */
+void Octree::__findPointsInRegion(Octree *t, std::vector<Vertex *>& vertives)
+{
+    // should only be done for leaves
+    if (!t->leaf())
+        return;
+
+    std::vector<Vertex *>::iterator vertexIterator;
+    glm::vec3 pos;
+    int nb = 0;
+
+    for (vertexIterator = vertives.begin(); vertexIterator != vertives.end(); vertexIterator++)
+    {
+        pos = (*vertexIterator)->getPosition();
+
+        if (pos.x >= t->getBorderLowerSW().x && pos.x <= t->getBorderLowerSE().x &&
+                pos.y >= t->getBorderLowerSE().y && pos.y <= t->getBorderUpperSE().y &&
+                pos.z >= t->getBorderLowerSE().z && pos.z <= t->getBorderUpperSE().z)
+        {
+            nb++;
+            t->addPoint((*vertexIterator));
+        }
+    }
+
+    std::cout << "found " << nb << " points" << std::endl;
 }
