@@ -445,6 +445,10 @@ bool Octree::leaf()
     return _isLeaf;
 }
 
+/**
+ * @brief Octree::deleteFromNode
+ * @param t node to delete (all children of that node will be deleted as well)
+ */
 void Octree::deleteFromNode(Octree *t)
 {
     if (t->leaf())
@@ -465,4 +469,56 @@ void Octree::deleteFromNode(Octree *t)
 
         delete t;
     }
+}
+
+/**
+ * @brief Octree::findSpaceBorders find the space borders of the starting cube (root)
+ * @param vertices list of all vertices (point cloud in that case)
+ */
+void Octree::findSpaceBorders(std::vector<Vertex *> &vertices)
+{
+    float minX = 0.f;
+    float maxX = 0.f;
+    float minY = 0.f;
+    float maxY = 0.f;
+    float minZ = 0.f;
+    float maxZ = 0.f;
+
+    std::vector<Vertex *>::iterator vertexIterator;
+    glm::vec3 pos;
+
+    // for each vertex of vertices
+    for (vertexIterator = vertices.begin(); vertexIterator != vertices.end(); vertexIterator++)
+    {
+        pos = (*vertexIterator)->getPosition();
+
+        // finding min & max for all XYZ coordinates
+        if(pos.x < minX)
+            minX = pos.x;
+        if(pos.x > maxX)
+            maxX = pos.x;
+        if(pos.y < minY)
+            minY = pos.y;
+        if(pos.y > maxY)
+            maxY = pos.y;
+        if(pos.z < minZ)
+            minZ = pos.z;
+        if(pos.z > maxZ)
+            maxZ = pos.z;
+    }
+
+    // debug
+    std::cout << "X = [" << minX << "," << maxX << "]" << std::endl;
+    std::cout << "Y = [" << minY << "," << maxY << "]" << std::endl;
+    std::cout << "Z = [" << minZ << "," << maxZ << "]" << std::endl;
+
+    // setting the 8 points constraining the root cube
+    _borderLowerNW = glm::vec3(minX, maxY, minZ);
+    _borderLowerNE = glm::vec3(maxX, maxY, minZ);
+    _borderLowerSW = glm::vec3(minX, minY, minZ);
+    _borderLowerSE = glm::vec3(maxX, minY, minZ);
+    _borderUpperNW = glm::vec3(minX, maxY, maxZ);
+    _borderUpperNE = glm::vec3(maxX, maxY, maxZ);
+    _borderUpperSW = glm::vec3(minX, minY, maxZ);
+    _borderUpperSE = glm::vec3(maxX, minY, maxZ);
 }
