@@ -103,6 +103,10 @@ public:
     void constructWithMinSize(float size);
     void constructWithIterations(int k);
     std::vector<Vertex *>& findKNeartestNeighbours(Vertex *ref, int k);
+
+private:
+    // internal method(s)
+    void __buildOctreeNode(Octree *t);
 };
 
 #endif // OCTREE_H

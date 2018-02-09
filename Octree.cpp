@@ -522,3 +522,27 @@ void Octree::findSpaceBorders(std::vector<Vertex *> &vertices)
     _borderUpperSW = glm::vec3(minX, minY, maxZ);
     _borderUpperSE = glm::vec3(maxX, minY, maxZ);
 }
+
+/**
+ * @brief Octree::constructWithMinSize recursively construct the octree until the leaves have the given size
+ * @param size minimum size the cube should reach
+ */
+void Octree::constructWithMinSize(float size)
+{
+    // TODO
+}
+
+/**
+ * @brief Octree::constructWithIterations recursively construct the octree for a depth of k
+ * @param k depth of the tree (number of subdivisions of space)
+ */
+void Octree::constructWithIterations(int k)
+{
+    // TODO
+}
+
+//-----------------------------------------------------------------------------
+// Iternal method(s)
+//-----------------------------------------------------------------------------
+
+
