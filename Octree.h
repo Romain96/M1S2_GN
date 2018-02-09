@@ -107,6 +107,7 @@ public:
 private:
     // internal method(s)
     void __buildOctreeNode(Octree *t);
+    void __findPointsInRegion(Octree *t);
 };
 
 #endif // OCTREE_H

@@ -545,4 +545,57 @@ void Octree::constructWithIterations(int k)
 // Iternal method(s)
 //-----------------------------------------------------------------------------
 
+/**
+ * @brief Octree::__buildOctreeNode builds the children of the current node
+ * @param t node to build
+ */
+void Octree::__buildOctreeNode(Octree *t)
+{
+    // just dividing the region in 8 subregions (4 lower, 4 upper)
+    t->setNotLeaf();
 
+    // center of cube
+    glm::vec3 center = (t->getBorderLowerSW() + t->getBorderUpperNE()) /2.f; // = middle of diagonal
+
+    // center of each face (determined by center of diagonals)
+    glm::vec3 centerUpperFace = (t->getBorderUpperNE() + t->getBorderUpperSW()) / 2.f;
+    glm::vec3 centerLowerFace = (t->getBorderLowerNE() + t->getBorderLowerSW()) / 2.f;
+    glm::vec3 centerNorthFace = (t->getBorderUpperNE() + t->getBorderLowerNW()) / 2.f;
+    glm::vec3 centerSouthFace = (t->getBorderUpperSE() + t->getBorderLowerSW()) / 2.f;
+    glm::vec3 centerWestFace = (t->getBorderUpperNW() + t->getBorderLowerSW()) / 2.f;
+    glm::vec3 centerEastFace = (t->getBorderUpperNE() + t->getBorderLowerSE()) / 2.f;
+
+    // center of each edge
+    glm::vec3 centerNorthWestEdge = (t->getBorderUpperNW() + t->getBorderLowerNW()) / 2.f;
+    glm::vec3 centerNorthEastEdge = (t->getBorderUpperNE() + t->getBorderLowerNE()) / 2.f;
+    glm::vec3 centerSouthWestEdge = (t->getBorderUpperSW() + t->getBorderLowerSW()) / 2.f;
+    glm::vec3 centerSouthEastEdge = (t->getBorderUpperSE() + t->getBorderLowerSE()) / 2.f;
+
+    glm::vec3 centerLowerNorthEdge = (t->getBorderLowerNW() + t->getBorderLowerNE()) / 2.f;
+    glm::vec3 centerLowerSouthEdge = (t->getBorderLowerSW() + t->getBorderLowerSE()) / 2.f;
+    glm::vec3 centerLowerEastEdge = (t->getBorderLowerNE() + t->getBorderLowerSE()) / 2.f;
+    glm::vec3 centerLowerWestEdge = (t->getBorderLowerNW() + t->getBorderLowerSW()) / 2.f;
+
+    glm::vec3 centerUpperNorthEdge = (t->getBorderUpperNW() + t->getBorderUpperNE()) / 2.f;
+    glm::vec3 centerUpperSouthEdge = (t->getBorderUpperSW() + t->getBorderUpperSE()) / 2.f;
+    glm::vec3 centerUpperEastEdge = (t->getBorderUpperNE() + t->getBorderUpperSE()) / 2.f;
+    glm::vec3 centerUpperWestEdge = (t->getBorderUpperNW() + t->getBorderUpperSE()) / 2.f;
+
+    // creating the 8 subregions
+    t->setUpperNW(new Octree(centerNorthWestEdge, centerNorthFace, centerWestFace, center,
+                             t->getBorderUpperNW(), centerUpperNorthEdge, centerUpperWestEdge, centerUpperFace));
+    t->setUpperNE(new Octree(centerNorthFace, centerNorthEastEdge, center, centerEastFace,
+                             centerUpperNorthEdge, t->getBorderUpperNE(), centerUpperFace, centerUpperEastEdge));
+    t->setUpperSW(new Octree(centerWestFace, center, centerSouthWestEdge, centerSouthFace,
+                             centerUpperWestEdge, centerUpperFace, t->getBorderUpperSW(), centerUpperSouthEdge));
+    t->setUpperSE(new Octree(center, centerEastFace, centerSouthFace, centerSouthEastEdge,
+                             centerUpperFace, centerUpperEastEdge, centerUpperSouthEdge, t->getBorderUpperSE()));
+    t->setLowerNW(new Octree(t->getBorderLowerNW(), centerLowerNorthEdge, centerLowerWestEdge, centerLowerFace,
+                             centerNorthWestEdge, centerNorthFace, centerWestFace, center));
+    t->setLowerNE(new Octree(centerLowerNorthEdge, t->getBorderLowerNE(), centerLowerFace, centerLowerEastEdge,
+                             centerNorthFace, centerNorthEastEdge, center, centerEastFace));
+    t->setLowerSW(new Octree(centerLowerEastEdge, centerLowerFace, t->getBorderLowerSW(), centerLowerSouthEdge,
+                             centerWestFace, center, centerSouthWestEdge, centerSouthFace));
+    t->setLowerSE(new Octree(centerLowerFace, centerLowerEastEdge, centerLowerSouthEdge, t->getBorderLowerSE(),
+                             center, centerEastFace, centerSouthFace, centerSouthEastEdge));
+}
