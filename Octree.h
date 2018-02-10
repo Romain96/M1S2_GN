@@ -15,6 +15,7 @@
 // stl
 #include <iostream>
 #include <vector>
+#include <utility>
 
 #include "Vertex.h"
 
@@ -85,6 +86,8 @@ public:
     Octree *getUpperSW();
     Octree *getUpperSE();
 
+    std::vector<Vertex *>& getPoints();
+
     // setter(s)
     void setBorderLowerNW(glm::vec3& v);
     void setBorderLowerNE(glm::vec3& v);
@@ -112,7 +115,7 @@ public:
     void findSpaceBorders(std::vector<Vertex *>& vertices);
     void constructWithMinSize(float size, std::vector<Vertex *>& vertices);
     void constructWithIterations(int k, std::vector<Vertex *>& vertices);
-    std::vector<Vertex *>& findKNeartestNeighbours(Vertex *ref, int k);
+    std::vector<std::pair<Vertex *, float>>& findKNeartestNeighbours(Vertex *ref, int k);
 
 private:
     // internal method(s)

@@ -12,6 +12,8 @@
 // stl
 #include <iostream>
 #include <vector>
+#include <utility>
+#include <queue>
 
 #include "Vertex.h"
 #include "Octree.h"
@@ -241,6 +243,15 @@ Octree *Octree::getUpperSE()
     return _upperSE;
 }
 
+/**
+ * @brief Octree::getPoints
+ * @return the list of points belonging to a node of the tree (only leraves have points)
+ */
+std::vector<Vertex *>& Octree::getPoints()
+{
+    return _points;
+}
+
 //-----------------------------------------------------------------------------
 // Setter(s)
 //-----------------------------------------------------------------------------
@@ -419,17 +430,13 @@ void Octree::addPoint(Vertex *v)
 }
 
 /**
- * @brief Octree::isInside tests is a point is inside a node (only for the leaves)
+ * @brief Octree::isInside tests is a point is inside a node
  * @param v point to test
  * @param t node of the octree
  * @return true if v is inside the subregion defined by t
  */
 bool Octree::isInside(Vertex *v, Octree *t)
 {
-    // only for the leaves
-    if (!t->leaf())
-        return false;
-
     if (v->getPosition().x >= t->getBorderLowerSW().x && v->getPosition().x <= t->getBorderLowerSE().x &&
             v->getPosition().y >= t->getBorderLowerSE().y && v->getPosition().y <= t->getBorderLowerNE().y &&
             v->getPosition().z >= t->getBorderLowerSE().z && v->getPosition().z <= t->getBorderUpperSE().z)
@@ -586,6 +593,87 @@ void Octree::constructWithIterations(int k, std::vector<Vertex *> &vertices)
     _sizeTest = false;
 
     Octree::__buildOctreeNode(this, 0, vertices);
+}
+
+// custom compare function for the priority queue in findKNearestNeighbours method
+class Compare
+{
+public:
+    operator() (std::pair<Vertex *, float> v1, std::pair<Vertex *, float> v2)
+    {
+        return v1.second < v2.second;
+    }
+};
+
+/**
+ * @brief Octree::findKNeartestNeighbours returns the k nearest neighbours of a point
+ * @param ref the point of reference
+ * @param k the number of neighbours to find
+ * @return a vector containing the k nearest neighbours and their distances to v
+ */
+std::vector<std::pair<Vertex *, float>>& Octree::findKNeartestNeighbours(Vertex *ref, int k)
+{
+    // here we will store the neighbours
+    static std::vector<std::pair<Vertex *, float>> neighbours;
+    neighbours.clear();
+    // here we will class the neighbours in increasing relative distance to ref
+    std::priority_queue<std::pair<Vertex *, float>, std::vector<std::pair<Vertex *, float>>, Compare> pq;
+
+    // first we need to find the subregion in which v belongs to
+    Octree *t = this;
+
+    while (!t->leaf())
+    {
+        if (Octree::isInside(ref, t->getLowerNE()))
+            t = t->getLowerNE();
+
+        if (Octree::isInside(ref, t->getLowerNW()))
+            t = t->getLowerNW();
+
+        if (Octree::isInside(ref, t->getLowerSE()))
+            t = t->getLowerSE();
+
+        if (Octree::isInside(ref, t->getLowerSW()))
+            t = t->getLowerSW();
+
+        if (Octree::isInside(ref, t->getUpperNE()))
+            t = t->getUpperNE();
+
+        if (Octree::isInside(ref, t->getUpperNW()))
+            t = t->getUpperNW();
+
+        if (Octree::isInside(ref, t->getUpperSE()))
+            t = t->getUpperSE();
+
+        if (Octree::isInside(ref, t->getUpperSW()))
+            t = t->getUpperSW();
+    }
+
+    // then we place each points other than v in a priority queue according to their distances to v
+    std::vector<Vertex *>::iterator it;
+    std::vector<Vertex *> points = t->getPoints();
+    std::pair<Vertex *, float> elem;
+    float distance = 0.f;
+
+    for (it = points.begin(); it < points.end(); it++)
+    {
+        distance = Vertex::distance3(ref->getPosition(), (*it)->getPosition());
+        elem.first = (*it);
+        elem.second = distance;
+
+        pq.push(elem);
+    }
+
+    // placing the k smallest values in neighbours
+    int nb = 0;
+    while (nb < k && !pq.empty())
+    {
+        elem = pq.top();
+        pq.pop();
+        neighbours.push_back(elem);
+    }
+
+    return neighbours;
 }
 
 //-----------------------------------------------------------------------------
