@@ -419,6 +419,26 @@ void Octree::addPoint(Vertex *v)
 }
 
 /**
+ * @brief Octree::isInside tests is a point is inside a node (only for the leaves)
+ * @param v point to test
+ * @param t node of the octree
+ * @return true if v is inside the subregion defined by t
+ */
+bool Octree::isInside(Vertex *v, Octree *t)
+{
+    // only for the leaves
+    if (!t->leaf())
+        return false;
+
+    if (v->getPosition().x >= t->getBorderLowerSW().x && v->getPosition().x <= t->getBorderLowerSE().x &&
+            v->getPosition().y >= t->getBorderLowerSE().y && v->getPosition().y <= t->getBorderLowerNE().y &&
+            v->getPosition().z >= t->getBorderLowerSE().z && v->getPosition().z <= t->getBorderUpperSE().z)
+        return true;
+    else
+        return false;
+}
+
+/**
  * @brief Octree::setLeaf warning deletes each children (but not recursively)
  */
 void Octree::setLeaf()

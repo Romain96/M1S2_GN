@@ -117,6 +117,7 @@ public:
 private:
     // internal method(s)
     void addPoint(Vertex *v);
+    static bool isInside(Vertex *v, Octree *t);
     static void __buildOctreeNode(Octree *t, int depth, std::vector<Vertex *>& vertices);
     static void __findPointsInRegion(Octree *t, std::vector<Vertex *>& vertives);
 };
