@@ -28,6 +28,22 @@ int main()
     Octree *t = new Octree();
     t->findSpaceBorders(m.getVertices());
     t->constructWithIterations(2, m.getVertices());
+    std::vector<std::pair<Vertex *, float>> nearest;
+    Vertex *v = m.getVertex(0);
+    nearest = t->findKNeartestNeighbours(v ,5);
+
+    std::pair<Vertex *, float> pair;
+    Vertex *vertex;
+    float distance;
+    std::cout << "5 nearest points are :" << std::endl;
+    for (int i = 0; i < nearest.size(); i++)
+    {
+        pair = nearest[i];
+        vertex = pair.first;
+        distance = pair.second;
+        std::cout << vertex->getPosition().x << ", " << vertex->getPosition().y
+                  << ", " << vertex->getPosition().z << " with distance of " << distance << std::endl;
+    }
 
     // reading test
     //m.importOFF("../OFF/block.off");

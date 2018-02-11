@@ -446,7 +446,7 @@ bool Octree::isInside(Vertex *v, Octree *t)
 }
 
 /**
- * @brief Octree::setLeaf warning deletes each children (but not recursively)
+ * @brief Octree::setLeaf warning deletes each children
  */
 void Octree::setLeaf()
 {
@@ -495,7 +495,11 @@ bool Octree::leaf()
  */
 void Octree::deleteFromNode(Octree *t)
 {
-    if (t->leaf())
+    if (t == nullptr)
+    {
+        return;
+    }
+    else if (t->leaf())
     {
         delete t;
     }
@@ -622,31 +626,32 @@ std::vector<std::pair<Vertex *, float>>& Octree::findKNeartestNeighbours(Vertex 
     // first we need to find the subregion in which v belongs to
     Octree *t = this;
 
+    std::cout << "finding " << k << " nearest neighbours of " << ref->getPosition().x
+              << ", " << ref->getPosition().y << ", " << ref->getPosition().z << std::endl;
+
     while (!t->leaf())
     {
         if (Octree::isInside(ref, t->getLowerNE()))
             t = t->getLowerNE();
-
-        if (Octree::isInside(ref, t->getLowerNW()))
+        else if (Octree::isInside(ref, t->getLowerNW()))
             t = t->getLowerNW();
-
-        if (Octree::isInside(ref, t->getLowerSE()))
+        else if (Octree::isInside(ref, t->getLowerSE()))
             t = t->getLowerSE();
-
-        if (Octree::isInside(ref, t->getLowerSW()))
+        else if (Octree::isInside(ref, t->getLowerSW()))
             t = t->getLowerSW();
-
-        if (Octree::isInside(ref, t->getUpperNE()))
+        else if (Octree::isInside(ref, t->getUpperNE()))
             t = t->getUpperNE();
-
-        if (Octree::isInside(ref, t->getUpperNW()))
+        else if (Octree::isInside(ref, t->getUpperNW()))
             t = t->getUpperNW();
-
-        if (Octree::isInside(ref, t->getUpperSE()))
+        else if (Octree::isInside(ref, t->getUpperSE()))
             t = t->getUpperSE();
-
-        if (Octree::isInside(ref, t->getUpperSW()))
+        else if (Octree::isInside(ref, t->getUpperSW()))
             t = t->getUpperSW();
+        else
+        {
+            std::cout << "not supposed to do that !!!" << std::endl;
+            break;
+        }
     }
 
     // then we place each points other than v in a priority queue according to their distances to v
@@ -671,6 +676,7 @@ std::vector<std::pair<Vertex *, float>>& Octree::findKNeartestNeighbours(Vertex 
         elem = pq.top();
         pq.pop();
         neighbours.push_back(elem);
+        nb++;
     }
 
     return neighbours;
@@ -691,6 +697,7 @@ void Octree::__buildOctreeNode(Octree *t, int depth, std::vector<Vertex *>& vert
     // halting condition is either a min size or a max depth to reach
     if (_depthTest && depth >= _depth)
     {
+        t->setLeaf();
         // finding all points in the current subregion
         Octree::__findPointsInRegion(t ,vertices);
         return;
