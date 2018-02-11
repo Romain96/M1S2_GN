@@ -603,9 +603,9 @@ void Octree::constructWithIterations(int k, std::vector<Vertex *> &vertices)
 class Compare
 {
 public:
-    operator() (std::pair<Vertex *, float> v1, std::pair<Vertex *, float> v2)
+    bool operator() (std::pair<Vertex *, float> v1, std::pair<Vertex *, float> v2)
     {
-        return v1.second < v2.second;
+        return v1.second > v2.second;
     }
 };
 
