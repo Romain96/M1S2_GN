@@ -666,7 +666,9 @@ std::vector<std::pair<Vertex *, float>>& Octree::findKNeartestNeighbours(Vertex 
         elem.first = (*it);
         elem.second = distance;
 
-        pq.push(elem);
+        // we shouldn't included ref himself !
+        if ((*it)->getId() != ref->getId())
+            pq.push(elem);
     }
 
     // placing the k smallest values in neighbours
