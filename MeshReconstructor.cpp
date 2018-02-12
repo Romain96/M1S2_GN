@@ -23,13 +23,13 @@
  * @brief MeshReconstructor::MeshReconstructor
  * @param m mesh (point cloud)
  */
-MeshReconstructor::MeshReconstructor(Mesh m) :
-    _mesh(m)
+MeshReconstructor::MeshReconstructor(Mesh m)
 {
+    _mesh = m;
     // creating the tree
     _tree = new Octree();
-    _tree->findSpaceBorders(m.getVertices());
-    _tree->constructWithIterations(10, m.getVertices());
+    _tree->findSpaceBorders(_mesh.getVertices());
+    _tree->constructWithIterations(2, _mesh.getVertices());
 }
 
 //-----------------------------------------------------------------------------
@@ -67,6 +67,8 @@ void MeshReconstructor::setK(int k)
  */
 void MeshReconstructor::computeCentroids()
 {
+    std::cout << "computing centroids" << std::endl;
+
     // simply calling Octree::findKNearestNeighbours for each point in _mesh
     std::vector<Vertex *>::iterator pointIterator;
     std::vector<std::pair<Vertex *, float>> neighbours;
@@ -82,6 +84,10 @@ void MeshReconstructor::computeCentroids()
         centroid = (1.f / neighbours.size()) * centroid;
 
         _centroids.push_back(centroid);
+
+        std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
     }
+
+
 
 }

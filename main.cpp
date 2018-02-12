@@ -24,6 +24,12 @@ int main()
     // testing on a hand made cube
     m.importOFF("../OFF/block.off");
 
+    // MeshReconstructor test
+    MeshReconstructor mr(m);
+    mr.setK(2);
+    mr.computeCentroids();
+
+    /*
     // octree test
     Octree *t = new Octree();
     t->findSpaceBorders(m.getVertices());
@@ -43,7 +49,7 @@ int main()
         distance = pair.second;
         std::cout << vertex->getPosition().x << ", " << vertex->getPosition().y
                   << ", " << vertex->getPosition().z << " with distance of " << distance << std::endl;
-    }
+    }*/
 
     // reading test
     //m.importOFF("../OFF/block.off");
