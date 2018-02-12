@@ -29,10 +29,11 @@ using namespace Eigen;
 class MeshReconstructor
 {
 private:
-    static int _k;
+    int _k;
 
 protected:
     Mesh _mesh;
+    Octree *_tree;
     std::vector<glm::vec3> _centroids;
     std::vector<glm::vec3> _normals;
     // TODO tangentPlanes
@@ -42,8 +43,10 @@ public:
     MeshReconstructor(Mesh m);
 
     // getter(s)
+    int getK();
 
     // setter(s)
+    void setK(int k);
 
     // method(s)
     void computeCentroids();
