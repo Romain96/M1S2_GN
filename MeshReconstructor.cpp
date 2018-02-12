@@ -80,6 +80,8 @@ void MeshReconstructor::computeCentroids()
         for (int i = 0; i < neighbours.size(); i++)
             centroid = centroid + neighbours[i].first->getPosition();
         centroid = (1.f / neighbours.size()) * centroid;
+
+        _centroids.push_back(centroid);
     }
 
 }
