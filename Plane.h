@@ -24,6 +24,7 @@ protected:
 
 public:
     //constructor(s)
+    Plane();
     Plane(glm::vec3& ev1, glm::vec3& ev2, glm::vec3& ev3);
 
     // getter(s)

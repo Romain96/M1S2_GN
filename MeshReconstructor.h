@@ -20,6 +20,7 @@
 #include "Vertex.h"
 #include "Mesh.h"
 #include "Octree.h"
+#include "Plane.h"
 
 using namespace Eigen;
 
@@ -35,8 +36,7 @@ protected:
     Mesh _mesh;
     Octree *_tree;
     std::vector<glm::vec3> _centroids;
-    std::vector<glm::vec3> _normals;
-    // TODO tangentPlanes
+    std::vector<Plane> _planes; // tangent planes + normals
 
 public:
     // constructor(s)

@@ -6,10 +6,17 @@
  */
 
 #include <set>
+#include <iostream>
 
 #include "MeshReconstructor.h"
 
 #include "Octree.h"
+#include "Plane.h"
+
+// Eigen
+#include "Eigen/Dense"
+#include "Eigen/Eigenvalues"
+using namespace Eigen;
 
 //-----------------------------------------------------------------------------
 // Constant(s)
@@ -78,6 +85,8 @@ void MeshReconstructor::computePlanes()
         neighbours.clear();
         glm::vec3 centroid(0.f);
         glm::mat3x3 covarianceMatrix(0.f);
+        Plane p();
+        Matrix3f eigen;
 
         // retrieving the k nearest neighbours of ref
         neighbours = _tree->findKNeartestNeighbours((*pointIterator), _k);
@@ -115,6 +124,12 @@ void MeshReconstructor::computePlanes()
         }
 
         // using Eigen lib and Principal Component Analysis to find the normal and local plane in Oi (centroid)
+        eigen << covarianceMatrix[0].x, covarianceMatrix[0].y, covarianceMatrix[0].z,
+                covarianceMatrix[1].x, covarianceMatrix[1].y, covarianceMatrix[1].z,
+                covarianceMatrix[2].x, covarianceMatrix[2].y, covarianceMatrix[2].z;
+
+        SelfAdjointEigenSolver<Matrix3f> eigensolver(eigen);
+        std::cout << "eigenvectors : " << eigensolver.eigenvectors() << std::endl;
 
     }
 }

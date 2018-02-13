@@ -19,6 +19,14 @@
 // Constructor(s)
 //-----------------------------------------------------------------------------
 
+Plane::Plane() :
+    _eigenvector1(glm::vec3(0.f)),
+    _eigenvector2(glm::vec3(0.f)),
+    _eigenvector3(glm::vec3(0.f))
+{
+    // nothing
+}
+
 /**
  * @brief Plane::Plane constructs a new plane with ACP computed eigenvectors
  * @param ev1 eigenvector 1
