@@ -63,9 +63,9 @@ void MeshReconstructor::setK(int k)
 //-----------------------------------------------------------------------------
 
 /**
- * @brief MeshReconstructor::computeCentroids
+ * @brief MeshReconstructor::computePlanes
  */
-void MeshReconstructor::computeCentroids()
+void MeshReconstructor::computePlanes()
 {
     std::cout << "computing centroids" << std::endl;
 

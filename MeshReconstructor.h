@@ -49,9 +49,7 @@ public:
     void setK(int k);
 
     // method(s)
-    void computeCentroids();
-    void computeNormalsPCA();
-    void computeTangentPlanes();
+    void computePlanes();
 };
 
 #endif // MESHRECONSTRUCTOR_H
