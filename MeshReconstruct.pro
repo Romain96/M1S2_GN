@@ -28,4 +28,5 @@ HEADERS += \
     Mesh.h \
     HalfEdge.h \
     MeshReconstructor.h \
-    Octree.h
+    Octree.h \
+    Plane.h
