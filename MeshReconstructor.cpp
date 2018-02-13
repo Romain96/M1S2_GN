@@ -76,18 +76,43 @@ void MeshReconstructor::computePlanes()
     for (pointIterator = _mesh.getVertices().begin(); pointIterator < _mesh.getVertices().end(); pointIterator++)
     {
         neighbours.clear();
+        glm::vec3 centroid(0.f);
+        glm::mat3x3 covarianceMatrix(0.f);
+
+        // retrieving the k nearest neighbours of ref
         neighbours = _tree->findKNeartestNeighbours((*pointIterator), _k);
 
-        glm::vec3 centroid;
+        // computing the centroid
         for (int i = 0; i < neighbours.size(); i++)
+        {
             centroid = centroid + neighbours[i].first->getPosition();
+        }
+
+        // storing the centroid in _centroids
         centroid = (1.f / neighbours.size()) * centroid;
-
         _centroids.push_back(centroid);
-
         std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
+
+        // computing the covariance matrix
+        for (int i = 0; i < neighbours.size(); i++)
+        {
+            // outer product
+            glm::mat3x3 cv;
+            glm::vec3 v(neighbours[i].first->getPosition() - centroid);
+            cv[0].x = v.x * v.x;
+            cv[0].y = v.x * v.y;
+            cv[0].z = v.x * v.z;
+
+            cv[1].x = v.y * v.x;
+            cv[1].y = v.y * v.y;
+            cv[1].z = v.y * v.z;
+
+            cv[2].x = v.z * v.x;
+            cv[2].y = v.z * v.y;
+            cv[2].z = v.z * v.z;
+
+            covarianceMatrix = covarianceMatrix + cv;
+        }
+
     }
-
-
-
 }

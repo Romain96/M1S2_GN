@@ -27,7 +27,7 @@ int main()
     // MeshReconstructor test
     MeshReconstructor mr(m);
     mr.setK(2);
-    mr.computeCentroids();
+    mr.computePlanes();
 
     /*
     // octree test
