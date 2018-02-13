@@ -83,7 +83,7 @@ void MeshReconstructor::computePlanes()
         neighbours = _tree->findKNeartestNeighbours((*pointIterator), _k);
 
         // computing the centroid
-        for (int i = 0; i < neighbours.size(); i++)
+        for (unsigned int i = 0; i < neighbours.size(); i++)
         {
             centroid = centroid + neighbours[i].first->getPosition();
         }
@@ -94,9 +94,9 @@ void MeshReconstructor::computePlanes()
         std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
 
         // computing the covariance matrix
-        for (int i = 0; i < neighbours.size(); i++)
+        for (unsigned int i = 0; i < neighbours.size(); i++)
         {
-            // outer product
+            // outer product to form the covariance matrix !
             glm::mat3x3 cv;
             glm::vec3 v(neighbours[i].first->getPosition() - centroid);
             cv[0].x = v.x * v.x;
@@ -113,6 +113,8 @@ void MeshReconstructor::computePlanes()
 
             covarianceMatrix = covarianceMatrix + cv;
         }
+
+        // using Eigen lib and Principal Component Analysis to find the normal and local plane in Oi (centroid)
 
     }
 }
