@@ -89,10 +89,10 @@ Octree::Octree(glm::vec3 &lowerNW, glm::vec3 &lowerNE, glm::vec3 &lowerSW, glm::
     _upperSE(nullptr),
     _points()
 {
-    std::cout << "Octree dim (diagonal) is "
+    /*std::cout << "Octree dim (diagonal) is "
               << _borderLowerSW.x << "," << _borderLowerSW.y << "," << _borderLowerSW.z
               << " to "
-              << _borderUpperNE.x << "," << _borderUpperNE.y << "," << _borderUpperNE.z << std::endl;
+              << _borderUpperNE.x << "," << _borderUpperNE.y << "," << _borderUpperNE.z << std::endl;*/
 }
 
 //-----------------------------------------------------------------------------
@@ -626,8 +626,8 @@ std::vector<std::pair<Vertex *, float>>& Octree::findKNeartestNeighbours(Vertex 
     // first we need to find the subregion in which v belongs to
     Octree *t = this;
 
-    std::cout << "finding " << k << " nearest neighbours of " << ref->getPosition().x
-              << ", " << ref->getPosition().y << ", " << ref->getPosition().z << std::endl;
+    /*std::cout << "finding " << k << " nearest neighbours of " << ref->getPosition().x
+              << ", " << ref->getPosition().y << ", " << ref->getPosition().z << std::endl;*/
 
     while (!t->leaf())
     {

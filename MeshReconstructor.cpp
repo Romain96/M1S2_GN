@@ -85,8 +85,9 @@ void MeshReconstructor::computePlanes()
         neighbours.clear();
         glm::vec3 centroid(0.f);
         glm::mat3x3 covarianceMatrix(0.f);
-        Plane p();
+        Plane p;
         Matrix3f eigen;
+        Matrix3f ev;
 
         // retrieving the k nearest neighbours of ref
         neighbours = _tree->findKNeartestNeighbours((*pointIterator), _k);
@@ -100,7 +101,7 @@ void MeshReconstructor::computePlanes()
         // storing the centroid in _centroids
         centroid = (1.f / neighbours.size()) * centroid;
         _centroids.push_back(centroid);
-        std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
+        //std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
 
         // computing the covariance matrix
         for (unsigned int i = 0; i < neighbours.size(); i++)
@@ -129,7 +130,17 @@ void MeshReconstructor::computePlanes()
                 covarianceMatrix[2].x, covarianceMatrix[2].y, covarianceMatrix[2].z;
 
         SelfAdjointEigenSolver<Matrix3f> eigensolver(eigen);
-        std::cout << "eigenvectors : " << eigensolver.eigenvectors() << std::endl;
+        //std::cout << "eigenvectors : " << eigensolver.eigenvectors() << std::endl;
+        ev = eigensolver.eigenvectors();
 
+        // storing the eigenvectors in a Plane
+        glm::vec3 temp;
+        temp = glm::vec3(ev(0,0), ev(0,1), ev(0,2));
+        p.setEigenvector1(temp);
+        temp = glm::vec3(ev(1,0), ev(1,1), ev(1,2));
+        p.setEigenvector2(temp);
+        temp = glm::vec3(ev(2,0), ev(2,1), ev(2,2));
+        p.setEigenvector3(temp);
+        _planes.push_back(p);
     }
 }
