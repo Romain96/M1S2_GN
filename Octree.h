@@ -113,6 +113,7 @@ public:
     void setNotLeaf();
     static void deleteFromNode(Octree *t);
     void findSpaceBorders(std::vector<Vertex *>& vertices);
+    void findSpaceBorders(std::vector<glm::vec3>& points);
     void constructWithMinSize(float size, std::vector<Vertex *>& vertices);
     void constructWithIterations(int k, std::vector<Vertex *>& vertices);
     std::vector<std::pair<Vertex *, float>>& findKNeartestNeighbours(Vertex *ref, int k);
