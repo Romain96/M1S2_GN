@@ -556,6 +556,7 @@ void Octree::findSpaceBorders(std::vector<Vertex *> &vertices)
     }
 
     // debug
+    std::cout << "Space borders (outer root cube) :" << std::endl;
     std::cout << "X = [" << minX << "," << maxX << "]" << std::endl;
     std::cout << "Y = [" << minY << "," << maxY << "]" << std::endl;
     std::cout << "Z = [" << minZ << "," << maxZ << "]" << std::endl;
