@@ -307,7 +307,7 @@ void Octree::setBorderUpperNW(glm::vec3& v)
  */
 void Octree::setBorderUpperNE(glm::vec3& v)
 {
-    _borderUpperSW = v;
+    _borderUpperNE = v;
 }
 
 /**

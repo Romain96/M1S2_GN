@@ -49,7 +49,7 @@ Graph::Graph(std::vector<Plane>& planes, std::vector<glm::vec3>& centroids)
     // construction of an Octree on the centroids
     _tree = Octree();
     _tree.findSpaceBorders(centroids);
-    _tree.constructWithIterations(2, centroids);
+   // _tree.constructWithIterations(2, centroids);
 
     // building edges
     // TODO
