@@ -11,22 +11,12 @@
 // STL
 #include <map>
 #include <vector>
+#include <iostream>
 
 #include "Node.h"
 #include "Edge.h"
 #include "Octree.h"
 #include "Vertex.h"
-
-/**
- * @brief The EdgeComparator class comparator class for Edges (map)
- */
-class EdgeComparator
-{
-    bool operator() (std::pair<int, Edge *>e1, std::pair<int, Edge *> e2)
-    {
-        return e1.second->getWeight() < e2.second->getWeight();
-    }
-};
 
 /**
  * @brief The Graph class
@@ -37,7 +27,7 @@ protected:
     // storing all nodes (same number as centroids or tangent planes)
     std::vector<Node *> _nodes;
     // storing all edges (number unknown)
-    std::map<int, Edge *, EdgeComparator> _edges;
+    std::vector<Edge *> _edges;
 
 public:
     // constructor(s)
@@ -47,13 +37,13 @@ public:
     Node *getNodeAtIndex(unsigned int i);
     Edge *getEdgeAtIndex(unsigned int i);
     std::vector<Node *>& getNodes();
-    std::map<int, Edge *, EdgeComparator>& getEdges();
+    std::vector<Edge *>& getEdges();
 
     // setter(s)
     void setNodeAtIndex(Node *n, unsigned int i);
     void setEdgeAtIndex(Edge *e, unsigned int i);
     void setNodes(std::vector<Node *>& nodes);
-    void setEdges(std::map<int, Edge *, EdgeComparator>& edges);
+    void setEdges(std::vector<Edge *>& edges);
 
     // method(s)
     void buildGraph(Octree *t, std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
