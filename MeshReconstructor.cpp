@@ -92,7 +92,7 @@ std::vector<Vertex *>& MeshReconstructor::getCentroids()
  * @brief MeshReconstructor::getPlanes
  * @return a vector containing all computed tangent planes
  */
-std::vector<Plane>& MeshReconstructor::getPlanes()
+std::vector<Plane *>& MeshReconstructor::getPlanes()
 {
     return _planes;
 }
@@ -150,7 +150,7 @@ void MeshReconstructor::setCentroids(std::vector<Vertex *> &centroids)
  * @brief MeshReconstructor::setPlanes
  * @param planes new list of computed tangent planes
  */
-void MeshReconstructor::setPlanes(std::vector<Plane> &planes)
+void MeshReconstructor::setPlanes(std::vector<Plane *> &planes)
 {
     _planes = planes;
 }
@@ -181,7 +181,7 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes(std::vector<Vertex *> &
     int id = 0;
     glm::vec3 centroid(0.f);
     glm::mat3x3 covarianceMatrix(0.f);
-    Plane p;
+    Plane *p;
     Matrix3f eigen;
     Matrix3f ev;
 
@@ -236,12 +236,13 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes(std::vector<Vertex *> &
 
         // storing the eigenvectors in a Plane
         glm::vec3 temp;
+        p = new Plane();
         temp = glm::vec3(ev(0,0), ev(0,1), ev(0,2));
-        p.setEigenvector1(temp);
+        p->setEigenvector1(temp);
         temp = glm::vec3(ev(1,0), ev(1,1), ev(1,2));
-        p.setEigenvector2(temp);
+        p->setEigenvector2(temp);
         temp = glm::vec3(ev(2,0), ev(2,1), ev(2,2));
-        p.setEigenvector3(temp);
+        p->setEigenvector3(temp);
         _planes.push_back(p);
     }
 }

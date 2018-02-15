@@ -819,5 +819,5 @@ void Octree::__findPointsInRegion(Octree *t, std::vector<Vertex *>& vertives)
         }
     }
 
-   // std::cout << "found " << nb << " points" << std::endl;
+   //std::cout << "found " << nb << " points" << std::endl;
 }

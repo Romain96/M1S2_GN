@@ -40,7 +40,7 @@ protected:
     // list of all computed centroids
     std::vector<Vertex *> _centroids;
     // list of all computed tangent planes with their associated normal
-    std::vector<Plane> _planes;
+    std::vector<Plane *> _planes;
     // computed Mesh
     Mesh _result;
 
@@ -53,7 +53,7 @@ public:
     Octree *getPointTree();
     Octree *getCentroidTree();
     std::vector<Vertex *>& getCentroids();
-    std::vector<Plane>& getPlanes();
+    std::vector<Plane *>& getPlanes();
     Mesh& getComputedMesh();
 
     // setter(s)
@@ -61,7 +61,7 @@ public:
     void setPointTree(Octree *t);
     void setCentroidTree(Octree *t);
     void setCentroids(std::vector<Vertex *>& centroids);
-    void setPlanes(std::vector<Plane>& planes);
+    void setPlanes(std::vector<Plane *>& planes);
     void setComputedMesh(Mesh& m);
 
     // method(s)
