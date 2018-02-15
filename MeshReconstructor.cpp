@@ -30,13 +30,17 @@ using namespace Eigen;
  * @brief MeshReconstructor::MeshReconstructor
  * @param m mesh (point cloud)
  */
-MeshReconstructor::MeshReconstructor(Mesh m)
+MeshReconstructor::MeshReconstructor(Mesh m) :
+    _pointTree(nullptr),
+    _centroidTree(nullptr),
+    _centroids(),
+    _planes()
 {
-    _mesh = m;
-    // creating the tree
-    _tree = new Octree();
-    _tree->findSpaceBorders(_mesh.getVertices());
-    _tree->constructWithIterations(2, _mesh.getVertices());
+    // calling a method to build the pointTree
+
+    // calling a method to build the centroids and tangent planes
+
+    // calling a method to build the centroidTree
 }
 
 //-----------------------------------------------------------------------------
@@ -52,6 +56,51 @@ int MeshReconstructor::getK()
     return _k;
 }
 
+/**
+ * @brief MeshReconstructor::getPointTree
+ * @return a pointer to the Octree based on the point cloud
+ */
+Octree *MeshReconstructor::getPointTree()
+{
+    return _pointTree;
+}
+
+/**
+ * @brief MeshReconstructor::getCentroidTree
+ * @return a pointer to the Octree based on the centroids
+ */
+Octree *MeshReconstructor::getCentroidTree()
+{
+    return _centroidTree;
+}
+
+/**
+ * @brief MeshReconstructor::getCentroids
+ * @return a vector containing all computed centroids
+ */
+std::vector<glm::vec3>& MeshReconstructor::getCentroids()
+{
+    return _centroids;
+}
+
+/**
+ * @brief MeshReconstructor::getPlanes
+ * @return a vector containing all computed tangent planes
+ */
+std::vector<Plane>& MeshReconstructor::getPlanes()
+{
+    return _planes;
+}
+
+/**
+ * @brief MeshReconstructor::getComputedMesh
+ * @return the computed Mesh
+ */
+Mesh& MeshReconstructor::getComputedMesh()
+{
+    return _result;
+}
+
 //-----------------------------------------------------------------------------
 // Setter(s)
 //-----------------------------------------------------------------------------
@@ -65,6 +114,51 @@ void MeshReconstructor::setK(int k)
     _k = k;
 }
 
+/**
+ * @brief MeshReconstructor::setPointTree
+ * @param t new Octree based on the point cloud
+ */
+void MeshReconstructor::setPointTree(Octree *t)
+{
+    _pointTree = t;
+}
+
+/**
+ * @brief MeshReconstructor::setCentroidTree
+ * @param t new Octree based on the centroids
+ */
+void MeshReconstructor::setCentroidTree(Octree *t)
+{
+    _centroidTree = t;
+}
+
+/**
+ * @brief MeshReconstructor::setCentroids
+ * @param centroids new list of computed centroids
+ */
+void MeshReconstructor::setCentroids(std::vector<glm::vec3> &centroids)
+{
+    _centroids = centroids;
+}
+
+/**
+ * @brief MeshReconstructor::setPlanes
+ * @param planes new list of computed tangent planes
+ */
+void MeshReconstructor::setPlanes(std::vector<Plane> &planes)
+{
+    _planes = planes;
+}
+
+/**
+ * @brief MeshReconstructor::setComputedMesh
+ * @param m new computed Mesh
+ */
+void MeshReconstructor::setComputedMesh(Mesh &m)
+{
+    _result = m;
+}
+
 //-----------------------------------------------------------------------------
 // Method(s)
 //-----------------------------------------------------------------------------
@@ -72,7 +166,7 @@ void MeshReconstructor::setK(int k)
 /**
  * @brief MeshReconstructor::computePlanes
  */
-void MeshReconstructor::computePlanes()
+void MeshReconstructor::computeCentroidsAndTangentPlanes()
 {
     std::cout << "computing centroids" << std::endl;
 

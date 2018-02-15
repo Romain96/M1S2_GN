@@ -33,10 +33,16 @@ private:
     int _k;
 
 protected:
-    Mesh _mesh;
-    Octree *_tree;
+    // Octree on the point cloud used to compute centroids
+    Octree *_pointTree;
+    // Octree on the centroids used to determine planes orientation
+    Octree *_centroidTree;
+    // list of all computed centroids
     std::vector<glm::vec3> _centroids;
-    std::vector<Plane> _planes; // tangent planes + normals
+    // list of all computed tangent planes with their associated normal
+    std::vector<Plane> _planes;
+    // computed Mesh
+    Mesh _result;
 
 public:
     // constructor(s)
@@ -44,12 +50,25 @@ public:
 
     // getter(s)
     int getK();
+    Octree *getPointTree();
+    Octree *getCentroidTree();
+    std::vector<glm::vec3>& getCentroids();
+    std::vector<Plane>& getPlanes();
+    Mesh& getComputedMesh();
 
     // setter(s)
     void setK(int k);
+    void setPointTree(Octree *t);
+    void setCentroidTree(Octree *t);
+    void setCentroids(std::vector<glm::vec3>& centroids);
+    void setPlanes(std::vector<Plane>& planes);
+    void setComputedMesh(Mesh& m);
 
     // method(s)
-    void computePlanes();
+    void computeCentroidsAndTangentPlanes();
+
+private:
+    void __buildCentroidOctree(std::vector<glm::vec3>& centroids);
 };
 
 #endif // MESHRECONSTRUCTOR_H

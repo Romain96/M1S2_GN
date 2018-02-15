@@ -573,58 +573,6 @@ void Octree::findSpaceBorders(std::vector<Vertex *> &vertices)
 }
 
 /**
- * @brief Octree::findSpaceBorders find the space borders of the starting cube (root)
- * @param points point cloud
- */
-void Octree::findSpaceBorders(std::vector<glm::vec3> &points)
-{
-    float minX = 0.f;
-    float maxX = 0.f;
-    float minY = 0.f;
-    float maxY = 0.f;
-    float minZ = 0.f;
-    float maxZ = 0.f;
-
-    std::vector<glm::vec3>::iterator pointIterator;
-    glm::vec3 pos;
-
-    // for each vertex of vertices
-    for (pointIterator = points.begin(); pointIterator != points.end(); pointIterator++)
-    {
-        pos = (*pointIterator);
-
-        // finding min & max for all XYZ coordinates
-        if(pos.x < minX)
-            minX = pos.x;
-        if(pos.x > maxX)
-            maxX = pos.x;
-        if(pos.y < minY)
-            minY = pos.y;
-        if(pos.y > maxY)
-            maxY = pos.y;
-        if(pos.z < minZ)
-            minZ = pos.z;
-        if(pos.z > maxZ)
-            maxZ = pos.z;
-    }
-
-    // debug
-    std::cout << "X = [" << minX << "," << maxX << "]" << std::endl;
-    std::cout << "Y = [" << minY << "," << maxY << "]" << std::endl;
-    std::cout << "Z = [" << minZ << "," << maxZ << "]" << std::endl;
-
-    // setting the 8 points constraining the root cube
-    _borderLowerNW = glm::vec3(minX, maxY, minZ);
-    _borderLowerNE = glm::vec3(maxX, maxY, minZ);
-    _borderLowerSW = glm::vec3(minX, minY, minZ);
-    _borderLowerSE = glm::vec3(maxX, minY, minZ);
-    _borderUpperNW = glm::vec3(minX, maxY, maxZ);
-    _borderUpperNE = glm::vec3(maxX, maxY, maxZ);
-    _borderUpperSW = glm::vec3(minX, minY, maxZ);
-    _borderUpperSE = glm::vec3(maxX, minY, maxZ);
-}
-
-/**
  * @brief Octree::constructWithMinSize recursively construct the octree until the leaves have the given size
  * @param size minimum size the cube should reach
  * @param vertices list of all vertices (point cloud)
