@@ -65,7 +65,7 @@ public:
     void setComputedMesh(Mesh& m);
 
     // method(s)
-    void computeCentroidsAndTangentPlanes(Mesh m);
+    void computeCentroidsAndTangentPlanes(std::vector<Vertex *>& vertices);
 
 private:
     void __buildCentroidOctree(std::vector<glm::vec3>& centroids);

@@ -30,19 +30,17 @@ using namespace Eigen;
  * @brief MeshReconstructor::MeshReconstructor
  * @param m mesh (point cloud)
  */
-MeshReconstructor::MeshReconstructor(Mesh m) :
-    _pointTree(nullptr),
-    _centroidTree(nullptr),
-    _centroids(),
-    _planes()
+MeshReconstructor::MeshReconstructor(Mesh m)
 {
+    _k = 2;
+
     // calling a method to build the pointTree
     _pointTree = new Octree();
     _pointTree->findSpaceBorders(m.getVertices());
     _pointTree->constructWithIterations(2, m.getVertices());
 
     // calling a method to build the centroids and tangent planes
-    computeCentroidsAndTangentPlanes(m);
+    computeCentroidsAndTangentPlanes(m.getVertices());
 
     // building the centroidTree
     _centroidTree = new Octree();
@@ -173,7 +171,7 @@ void MeshReconstructor::setComputedMesh(Mesh &m)
 /**
  * @brief MeshReconstructor::computePlanes
  */
-void MeshReconstructor::computeCentroidsAndTangentPlanes(Mesh m)
+void MeshReconstructor::computeCentroidsAndTangentPlanes(std::vector<Vertex *> &vertices)
 {
     std::cout << "computing centroids" << std::endl;
 
@@ -181,15 +179,16 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes(Mesh m)
     std::vector<Vertex *>::iterator pointIterator;
     std::vector<std::pair<Vertex *, float>> neighbours;
     int id = 0;
+    glm::vec3 centroid(0.f);
+    glm::mat3x3 covarianceMatrix(0.f);
+    Plane p;
+    Matrix3f eigen;
+    Matrix3f ev;
 
-    for (pointIterator = m.getVertices().begin(); pointIterator < m.getVertices().end(); pointIterator++)
+    for (pointIterator = vertices.begin(); pointIterator < vertices.end(); pointIterator++)
     {
+        // clearing previously retrieved neighbours
         neighbours.clear();
-        glm::vec3 centroid(0.f);
-        glm::mat3x3 covarianceMatrix(0.f);
-        Plane p;
-        Matrix3f eigen;
-        Matrix3f ev;
 
         // retrieving the k nearest neighbours of ref
         neighbours = _pointTree->findKNeartestNeighbours((*pointIterator), _k);
@@ -210,7 +209,7 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes(Mesh m)
         {
             // outer product to form the covariance matrix !
             glm::mat3x3 cv;
-            glm::vec3 v(neighbours[i].first->getPosition() - centroid);
+            glm::vec3 v = neighbours[i].first->getPosition() - centroid;
             cv[0].x = v.x * v.x;
             cv[0].y = v.x * v.y;
             cv[0].z = v.x * v.z;

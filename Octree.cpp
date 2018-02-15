@@ -737,7 +737,7 @@ void Octree::__buildOctreeNode(Octree *t, int depth, std::vector<Vertex *>& vert
     glm::vec3 centerUpperNorthEdge = (t->getBorderUpperNW() + t->getBorderUpperNE()) / 2.f;
     glm::vec3 centerUpperSouthEdge = (t->getBorderUpperSW() + t->getBorderUpperSE()) / 2.f;
     glm::vec3 centerUpperEastEdge = (t->getBorderUpperNE() + t->getBorderUpperSE()) / 2.f;
-    glm::vec3 centerUpperWestEdge = (t->getBorderUpperNW() + t->getBorderUpperSE()) / 2.f;
+    glm::vec3 centerUpperWestEdge = (t->getBorderUpperNW() + t->getBorderUpperSW()) / 2.f;
 
     // creating the 8 subregions
     t->setUpperNW(new Octree(centerNorthWestEdge, centerNorthFace, centerWestFace, center,
