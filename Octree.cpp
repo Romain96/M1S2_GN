@@ -35,7 +35,7 @@ bool Octree::_sizeTest = false;
  * @brief Octree::Octree default constructor (useful for root)
  */
 Octree::Octree() :
-    _borderLowerNW(),
+    _borderLowerNW(glm::vec3(0.f, 0.f, 0.f)),
     _borderLowerNE(glm::vec3(0.f, 0.f, 0.f)),
     _borderLowerSW(glm::vec3(0.f, 0.f, 0.f)),
     _borderLowerSE(glm::vec3(0.f, 0.f, 0.f)),
@@ -438,8 +438,8 @@ void Octree::addPoint(Vertex *v)
 bool Octree::isInside(Vertex *v, Octree *t)
 {
     if (v->getPosition().x >= t->getBorderLowerSW().x && v->getPosition().x <= t->getBorderLowerSE().x &&
-            v->getPosition().y >= t->getBorderLowerSE().y && v->getPosition().y <= t->getBorderLowerNE().y &&
-            v->getPosition().z >= t->getBorderLowerSE().z && v->getPosition().z <= t->getBorderUpperSE().z)
+                v->getPosition().y >= t->getBorderLowerSE().y && v->getPosition().y <= t->getBorderLowerNE().y &&
+                v->getPosition().z >= t->getBorderLowerSE().z && v->getPosition().z <= t->getBorderUpperSE().z)
         return true;
     else
         return false;
@@ -684,21 +684,45 @@ std::vector<std::pair<Vertex *, float>>& Octree::findKNeartestNeighbours(Vertex 
     while (!t->leaf())
     {
         if (Octree::isInside(ref, t->getLowerNE()))
+        {
             t = t->getLowerNE();
+            //std::cout << "LowerNE" << std::endl;
+        }
         else if (Octree::isInside(ref, t->getLowerNW()))
+        {
             t = t->getLowerNW();
+            //std::cout << "LowerNW" << std::endl;
+        }
         else if (Octree::isInside(ref, t->getLowerSE()))
+        {
             t = t->getLowerSE();
+            //std::cout << "LowerSE" << std::endl;
+        }
         else if (Octree::isInside(ref, t->getLowerSW()))
+        {
             t = t->getLowerSW();
+            //std::cout << "LowerSW" << std::endl;
+        }
         else if (Octree::isInside(ref, t->getUpperNE()))
+        {
             t = t->getUpperNE();
+            //std::cout << "UpperNE" << std::endl;
+        }
         else if (Octree::isInside(ref, t->getUpperNW()))
+        {
             t = t->getUpperNW();
+            //std::cout << "UpperNW" << std::endl;
+        }
         else if (Octree::isInside(ref, t->getUpperSE()))
+        {
             t = t->getUpperSE();
+            //std::cout << "UpperSE" << std::endl;
+        }
         else if (Octree::isInside(ref, t->getUpperSW()))
+        {
             t = t->getUpperSW();
+            //std::cout << "UpperSW" << std::endl;
+        }
         else
         {
             std::cout << "not supposed to do that !!!" << std::endl;
@@ -788,23 +812,30 @@ void Octree::__buildOctreeNode(Octree *t, int depth, std::vector<Vertex *>& vert
     glm::vec3 centerUpperNorthEdge = (t->getBorderUpperNW() + t->getBorderUpperNE()) / 2.f;
     glm::vec3 centerUpperSouthEdge = (t->getBorderUpperSW() + t->getBorderUpperSE()) / 2.f;
     glm::vec3 centerUpperEastEdge = (t->getBorderUpperNE() + t->getBorderUpperSE()) / 2.f;
-    glm::vec3 centerUpperWestEdge = (t->getBorderUpperNW() + t->getBorderUpperSE()) / 2.f;
+    glm::vec3 centerUpperWestEdge = (t->getBorderUpperNW() + t->getBorderUpperSW()) / 2.f;
 
     // creating the 8 subregions
     t->setUpperNW(new Octree(centerNorthWestEdge, centerNorthFace, centerWestFace, center,
                              t->getBorderUpperNW(), centerUpperNorthEdge, centerUpperWestEdge, centerUpperFace));
+
     t->setUpperNE(new Octree(centerNorthFace, centerNorthEastEdge, center, centerEastFace,
                              centerUpperNorthEdge, t->getBorderUpperNE(), centerUpperFace, centerUpperEastEdge));
+
     t->setUpperSW(new Octree(centerWestFace, center, centerSouthWestEdge, centerSouthFace,
                              centerUpperWestEdge, centerUpperFace, t->getBorderUpperSW(), centerUpperSouthEdge));
+
     t->setUpperSE(new Octree(center, centerEastFace, centerSouthFace, centerSouthEastEdge,
                              centerUpperFace, centerUpperEastEdge, centerUpperSouthEdge, t->getBorderUpperSE()));
+
     t->setLowerNW(new Octree(t->getBorderLowerNW(), centerLowerNorthEdge, centerLowerWestEdge, centerLowerFace,
                              centerNorthWestEdge, centerNorthFace, centerWestFace, center));
+
     t->setLowerNE(new Octree(centerLowerNorthEdge, t->getBorderLowerNE(), centerLowerFace, centerLowerEastEdge,
                              centerNorthFace, centerNorthEastEdge, center, centerEastFace));
-    t->setLowerSW(new Octree(centerLowerEastEdge, centerLowerFace, t->getBorderLowerSW(), centerLowerSouthEdge,
+
+    t->setLowerSW(new Octree(centerLowerWestEdge, centerLowerFace, t->getBorderLowerSW(), centerLowerSouthEdge,
                              centerWestFace, center, centerSouthWestEdge, centerSouthFace));
+
     t->setLowerSE(new Octree(centerLowerFace, centerLowerEastEdge, centerLowerSouthEdge, t->getBorderLowerSE(),
                              center, centerEastFace, centerSouthFace, centerSouthEastEdge));
 
@@ -847,5 +878,5 @@ void Octree::__findPointsInRegion(Octree *t, std::vector<Vertex *>& vertives)
         }
     }
 
-    std::cout << "found " << nb << " points" << std::endl;
+   // std::cout << "found " << nb << " points" << std::endl;
 }
