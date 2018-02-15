@@ -32,11 +32,20 @@ using namespace Eigen;
  */
 MeshReconstructor::MeshReconstructor(Mesh m)
 {
-    _mesh = m;
-    // creating the tree
-    _tree = new Octree();
-    _tree->findSpaceBorders(_mesh.getVertices());
-    _tree->constructWithIterations(2, _mesh.getVertices());
+    _k = 2;
+
+    // calling a method to build the pointTree
+    _pointTree = new Octree();
+    _pointTree->findSpaceBorders(m.getVertices());
+    _pointTree->constructWithIterations(2, m.getVertices());
+
+    // calling a method to build the centroids and tangent planes
+    computeCentroidsAndTangentPlanes(m.getVertices());
+
+    // building the centroidTree
+    _centroidTree = new Octree();
+    _centroidTree->findSpaceBorders(_centroids);
+    _centroidTree->constructWithIterations(2, _centroids);
 }
 
 //-----------------------------------------------------------------------------
@@ -52,6 +61,51 @@ int MeshReconstructor::getK()
     return _k;
 }
 
+/**
+ * @brief MeshReconstructor::getPointTree
+ * @return a pointer to the Octree based on the point cloud
+ */
+Octree *MeshReconstructor::getPointTree()
+{
+    return _pointTree;
+}
+
+/**
+ * @brief MeshReconstructor::getCentroidTree
+ * @return a pointer to the Octree based on the centroids
+ */
+Octree *MeshReconstructor::getCentroidTree()
+{
+    return _centroidTree;
+}
+
+/**
+ * @brief MeshReconstructor::getCentroids
+ * @return a vector containing all computed centroids
+ */
+std::vector<Vertex *>& MeshReconstructor::getCentroids()
+{
+    return _centroids;
+}
+
+/**
+ * @brief MeshReconstructor::getPlanes
+ * @return a vector containing all computed tangent planes
+ */
+std::vector<Plane>& MeshReconstructor::getPlanes()
+{
+    return _planes;
+}
+
+/**
+ * @brief MeshReconstructor::getComputedMesh
+ * @return the computed Mesh
+ */
+Mesh& MeshReconstructor::getComputedMesh()
+{
+    return _result;
+}
+
 //-----------------------------------------------------------------------------
 // Setter(s)
 //-----------------------------------------------------------------------------
@@ -65,6 +119,51 @@ void MeshReconstructor::setK(int k)
     _k = k;
 }
 
+/**
+ * @brief MeshReconstructor::setPointTree
+ * @param t new Octree based on the point cloud
+ */
+void MeshReconstructor::setPointTree(Octree *t)
+{
+    _pointTree = t;
+}
+
+/**
+ * @brief MeshReconstructor::setCentroidTree
+ * @param t new Octree based on the centroids
+ */
+void MeshReconstructor::setCentroidTree(Octree *t)
+{
+    _centroidTree = t;
+}
+
+/**
+ * @brief MeshReconstructor::setCentroids
+ * @param centroids new list of computed centroids
+ */
+void MeshReconstructor::setCentroids(std::vector<Vertex *> &centroids)
+{
+    _centroids = centroids;
+}
+
+/**
+ * @brief MeshReconstructor::setPlanes
+ * @param planes new list of computed tangent planes
+ */
+void MeshReconstructor::setPlanes(std::vector<Plane> &planes)
+{
+    _planes = planes;
+}
+
+/**
+ * @brief MeshReconstructor::setComputedMesh
+ * @param m new computed Mesh
+ */
+void MeshReconstructor::setComputedMesh(Mesh &m)
+{
+    _result = m;
+}
+
 //-----------------------------------------------------------------------------
 // Method(s)
 //-----------------------------------------------------------------------------
@@ -72,25 +171,27 @@ void MeshReconstructor::setK(int k)
 /**
  * @brief MeshReconstructor::computePlanes
  */
-void MeshReconstructor::computePlanes()
+void MeshReconstructor::computeCentroidsAndTangentPlanes(std::vector<Vertex *> &vertices)
 {
     std::cout << "computing centroids" << std::endl;
 
     // simply calling Octree::findKNearestNeighbours for each point in _mesh
     std::vector<Vertex *>::iterator pointIterator;
     std::vector<std::pair<Vertex *, float>> neighbours;
+    int id = 0;
+    glm::vec3 centroid(0.f);
+    glm::mat3x3 covarianceMatrix(0.f);
+    Plane p;
+    Matrix3f eigen;
+    Matrix3f ev;
 
-    for (pointIterator = _mesh.getVertices().begin(); pointIterator < _mesh.getVertices().end(); pointIterator++)
+    for (pointIterator = vertices.begin(); pointIterator < vertices.end(); pointIterator++)
     {
+        // clearing previously retrieved neighbours
         neighbours.clear();
-        glm::vec3 centroid(0.f);
-        glm::mat3x3 covarianceMatrix(0.f);
-        Plane p;
-        Matrix3f eigen;
-        Matrix3f ev;
 
         // retrieving the k nearest neighbours of ref
-        neighbours = _tree->findKNeartestNeighbours((*pointIterator), _k);
+        neighbours = _pointTree->findKNeartestNeighbours((*pointIterator), _k);
 
         // computing the centroid
         for (unsigned int i = 0; i < neighbours.size(); i++)
@@ -100,7 +201,7 @@ void MeshReconstructor::computePlanes()
 
         // storing the centroid in _centroids
         centroid = (1.f / neighbours.size()) * centroid;
-        _centroids.push_back(centroid);
+        _centroids.push_back(new Vertex(id++, centroid.x, centroid.y, centroid.z));
         //std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
 
         // computing the covariance matrix
@@ -108,7 +209,7 @@ void MeshReconstructor::computePlanes()
         {
             // outer product to form the covariance matrix !
             glm::mat3x3 cv;
-            glm::vec3 v(neighbours[i].first->getPosition() - centroid);
+            glm::vec3 v = neighbours[i].first->getPosition() - centroid;
             cv[0].x = v.x * v.x;
             cv[0].y = v.x * v.y;
             cv[0].z = v.x * v.z;
