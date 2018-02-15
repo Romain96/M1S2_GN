@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     Octree.cpp \
     Plane.cpp \
     Node.cpp \
-    Edge.cpp
+    Edge.cpp \
+    Graph.cpp
 
 HEADERS += \
     Vertex.h \
@@ -34,4 +35,5 @@ HEADERS += \
     Octree.h \
     Plane.h \
     Node.h \
-    Edge.h
+    Edge.h \
+    Graph.h
