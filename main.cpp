@@ -27,7 +27,6 @@ int main()
     // MeshReconstructor test
     MeshReconstructor mr(m);
     mr.setK(2);
-    //mr.computePlanes();
 
     // reading test
     //m.importOFF("../OFF/block.off");
