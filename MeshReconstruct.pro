@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     MeshReconstructor.cpp \
     Octree.cpp \
     Plane.cpp \
-    Node.cpp
+    Node.cpp \
+    Edge.cpp
 
 HEADERS += \
     Vertex.h \
@@ -32,4 +33,5 @@ HEADERS += \
     MeshReconstructor.h \
     Octree.h \
     Plane.h \
-    Node.h
+    Node.h \
+    Edge.h
