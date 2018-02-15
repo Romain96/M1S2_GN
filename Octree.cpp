@@ -686,42 +686,34 @@ std::vector<std::pair<Vertex *, float>>& Octree::findKNeartestNeighbours(Vertex 
         if (Octree::isInside(ref, t->getLowerNE()))
         {
             t = t->getLowerNE();
-            //std::cout << "LowerNE" << std::endl;
         }
         else if (Octree::isInside(ref, t->getLowerNW()))
         {
             t = t->getLowerNW();
-            //std::cout << "LowerNW" << std::endl;
         }
         else if (Octree::isInside(ref, t->getLowerSE()))
         {
             t = t->getLowerSE();
-            //std::cout << "LowerSE" << std::endl;
         }
         else if (Octree::isInside(ref, t->getLowerSW()))
         {
             t = t->getLowerSW();
-            //std::cout << "LowerSW" << std::endl;
         }
         else if (Octree::isInside(ref, t->getUpperNE()))
         {
             t = t->getUpperNE();
-            //std::cout << "UpperNE" << std::endl;
         }
         else if (Octree::isInside(ref, t->getUpperNW()))
         {
             t = t->getUpperNW();
-            //std::cout << "UpperNW" << std::endl;
         }
         else if (Octree::isInside(ref, t->getUpperSE()))
         {
             t = t->getUpperSE();
-            //std::cout << "UpperSE" << std::endl;
         }
         else if (Octree::isInside(ref, t->getUpperSW()))
         {
             t = t->getUpperSW();
-            //std::cout << "UpperSW" << std::endl;
         }
         else
         {
