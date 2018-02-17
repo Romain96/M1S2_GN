@@ -39,6 +39,9 @@ protected:
     // halting point (equivalent to "each child is null")
     bool _isLeaf;
 
+    // a link to the father node
+    Octree *_father;
+
     // each node has 8 children
     // the space is subdivided in 8 subregions
     Octree *_lowerNW;
@@ -77,6 +80,8 @@ public:
     glm::vec3& getBorderUpperSW();
     glm::vec3& getBorderUpperSE();
 
+    Octree *getFather();
+
     Octree *getLowerNW();
     Octree *getLowerNE();
     Octree *getLowerSW();
@@ -97,6 +102,8 @@ public:
     void setBorderUpperNE(glm::vec3& v);
     void setBorderUpperSW(glm::vec3& v);
     void setBorderUpperSE(glm::vec3& v);
+
+    void setFather(Octree *t);
 
     void setLowerNW(Octree *t);
     void setLowerNE(Octree *t);

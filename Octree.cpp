@@ -44,6 +44,7 @@ Octree::Octree() :
     _borderUpperSW(glm::vec3(0.f, 0.f, 0.f)),
     _borderUpperSE(glm::vec3(0.f, 0.f, 0.f)),
     _isLeaf(true),
+    _father(nullptr),
     _lowerNW(nullptr),
     _lowerNE(nullptr),
     _lowerSW(nullptr),
@@ -79,6 +80,7 @@ Octree::Octree(glm::vec3 &lowerNW, glm::vec3 &lowerNE, glm::vec3 &lowerSW, glm::
     _borderUpperSW(upperSW),
     _borderUpperSE(upperSE),
     _isLeaf(true),
+    _father(nullptr),
     _lowerNW(nullptr),
     _lowerNE(nullptr),
     _lowerSW(nullptr),
@@ -169,6 +171,15 @@ glm::vec3& Octree::getBorderUpperSW()
 glm::vec3& Octree::getBorderUpperSE()
 {
     return _borderUpperSE;
+}
+
+/**
+ * @brief Octree::getFather
+ * @return a pointer to the father node
+ */
+Octree *Octree::getFather()
+{
+    return _father;
 }
 
 /**
@@ -326,6 +337,15 @@ void Octree::setBorderUpperSW(glm::vec3& v)
 void Octree::setBorderUpperSE(glm::vec3& v)
 {
     _borderUpperSE = v;
+}
+
+/**
+ * @brief Octree::setFather
+ * @param t new pointer to father node
+ */
+void Octree::setFather(Octree *t)
+{
+    _father = t;
 }
 
 /**
@@ -666,7 +686,7 @@ std::vector<std::pair<Vertex *, float>>& Octree::findKNeartestNeighbours(Vertex 
         }
         else
         {
-            std::cout << "not supposed to do that !!!" << std::endl;
+            std::cerr << "Octree::findKNearestNeighbour error point is not iside one of the 8 children !" << std::endl;
             break;
         }
     }
@@ -779,6 +799,16 @@ void Octree::__buildOctreeNode(Octree *t, int depth, std::vector<Vertex *>& vert
 
     t->setLowerSE(new Octree(centerLowerFace, centerLowerEastEdge, centerLowerSouthEdge, t->getBorderLowerSE(),
                              center, centerEastFace, centerSouthFace, centerSouthEastEdge));
+
+    // setting the current node as the father of each 8 children
+    t->getUpperNE()->setFather(t);
+    t->getUpperNW()->setFather(t);
+    t->getUpperSE()->setFather(t);
+    t->getUpperSW()->setFather(t);
+    t->getLowerNE()->setFather(t);
+    t->getLowerNW()->setFather(t);
+    t->getLowerSE()->setFather(t);
+    t->getLowerSW()->setFather(t);
 
     // recurvely calling the Octree creation on its 8 children
     Octree::__buildOctreeNode(t->getLowerNW(), depth + 1, vertices);
