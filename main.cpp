@@ -25,8 +25,12 @@ int main()
     m.importOFF("../OFF/block.off");
 
     // MeshReconstructor test
-    MeshReconstructor mr(m);
+    MeshReconstructor mr(m.getVertices());
     mr.setK(2);
+    mr.buildPointTree();
+    mr.computeCentroidsAndTangentPlanes();
+    mr.buildCentroidTree();
+    mr.buildGraph();
 
     // reading test
     //m.importOFF("../OFF/block.off");

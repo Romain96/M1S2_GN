@@ -36,6 +36,8 @@ private:
     int _k;
 
 protected:
+    // list of all vertices (point cloud)
+    std::vector<Vertex *> _points;
     // Octree on the point cloud used to compute centroids
     Octree *_pointTree;
     // Octree on the centroids used to determine planes orientation
@@ -51,7 +53,7 @@ protected:
 
 public:
     // constructor(s)
-    MeshReconstructor(Mesh m);
+    MeshReconstructor(std::vector<Vertex *>& vertices);
 
     // getter(s)
     int getK();
@@ -70,7 +72,11 @@ public:
     void setComputedMesh(Mesh& m);
 
     // method(s)
-    void computeCentroidsAndTangentPlanes(std::vector<Vertex *>& vertices);
+    void buildPointTree();
+    void computeCentroidsAndTangentPlanes();
+    void buildCentroidTree();
+    void buildGraph();
+    void reorientateTangentPlanes();
 
 private:
     void __buildCentroidOctree(std::vector<glm::vec3>& centroids);

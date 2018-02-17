@@ -28,28 +28,12 @@ using namespace Eigen;
 
 /**
  * @brief MeshReconstructor::MeshReconstructor
- * @param m mesh (point cloud)
+ * @param vertices point cloud
  */
-MeshReconstructor::MeshReconstructor(Mesh m)
+MeshReconstructor::MeshReconstructor(std::vector<Vertex *> &vertices) :
+    _points(vertices)
 {
-    _k = 2;
-
-    // calling a method to build the pointTree
-    _pointTree = new Octree();
-    _pointTree->findSpaceBorders(m.getVertices());
-    _pointTree->constructWithIterations(2, m.getVertices());
-
-    // calling a method to build the centroids and tangent planes
-    computeCentroidsAndTangentPlanes(m.getVertices());
-
-    // building the centroidTree
-    _centroidTree = new Octree();
-    _centroidTree->findSpaceBorders(_centroids);
-    _centroidTree->constructWithIterations(2, _centroids);
-
-    // building the Graph
-    g = Graph();
-    g.buildGraph(_centroidTree, _centroids, _planes);
+    // nothing
 }
 
 //-----------------------------------------------------------------------------
@@ -173,9 +157,19 @@ void MeshReconstructor::setComputedMesh(Mesh &m)
 //-----------------------------------------------------------------------------
 
 /**
+ * @brief MeshReconstructor::buildPointTree
+ */
+void MeshReconstructor::buildPointTree()
+{
+    _pointTree = new Octree();
+    _pointTree->findSpaceBorders(_points);
+    _pointTree->constructWithIterations(_k, _points);
+}
+
+/**
  * @brief MeshReconstructor::computePlanes
  */
-void MeshReconstructor::computeCentroidsAndTangentPlanes(std::vector<Vertex *> &vertices)
+void MeshReconstructor::computeCentroidsAndTangentPlanes()
 {
     std::cout << "computing centroids" << std::endl;
 
@@ -189,7 +183,7 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes(std::vector<Vertex *> &
     Matrix3f eigen;
     Matrix3f ev;
 
-    for (pointIterator = vertices.begin(); pointIterator < vertices.end(); pointIterator++)
+    for (pointIterator = _points.begin(); pointIterator < _points.end(); pointIterator++)
     {
         // clearing previously retrieved neighbours
         neighbours.clear();
@@ -249,4 +243,23 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes(std::vector<Vertex *> &
         p->setEigenvector3(temp);
         _planes.push_back(p);
     }
+}
+
+/**
+ * @brief MeshReconstructor::buildCentroidTree
+ */
+void MeshReconstructor::buildCentroidTree()
+{
+    _centroidTree = new Octree();
+    _centroidTree->findSpaceBorders(_centroids);
+    _centroidTree->constructWithIterations(_k, _centroids);
+}
+
+/**
+ * @brief MeshReconstructor::buildGraph
+ */
+void MeshReconstructor::buildGraph()
+{
+    g = Graph();
+    g.buildGraph(_centroidTree, _centroids, _planes);
 }
