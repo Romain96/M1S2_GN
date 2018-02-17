@@ -261,5 +261,5 @@ void MeshReconstructor::buildCentroidTree()
 void MeshReconstructor::buildGraph()
 {
     g = Graph();
-    g.buildGraph(_centroidTree, _centroids, _planes);
+    g.buildGraph(_k, _centroidTree, _centroids, _planes);
 }

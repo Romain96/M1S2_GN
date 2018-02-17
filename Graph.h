@@ -46,7 +46,7 @@ public:
     void setEdges(std::vector<Edge *>& edges);
 
     // method(s)
-    void buildGraph(Octree *t, std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
+    void buildGraph(int k, Octree *t, std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
     void buildMinimumSpanningTree();
 
 private:
