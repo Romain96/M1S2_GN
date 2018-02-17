@@ -48,6 +48,10 @@ public:
     // method(s)
     void buildGraph(Octree *t, std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
     void buildMinimumSpanningTree();
+
+private:
+    // internal methods
+    void __buildNodes(std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
 };
 
 #endif // GRAPH_H

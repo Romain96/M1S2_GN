@@ -46,6 +46,10 @@ MeshReconstructor::MeshReconstructor(Mesh m)
     _centroidTree = new Octree();
     _centroidTree->findSpaceBorders(_centroids);
     _centroidTree->constructWithIterations(2, _centroids);
+
+    // building the Graph
+    g = Graph();
+    g.buildGraph(_centroidTree, _centroids, _planes);
 }
 
 //-----------------------------------------------------------------------------

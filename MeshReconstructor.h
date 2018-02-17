@@ -21,6 +21,9 @@
 #include "Mesh.h"
 #include "Octree.h"
 #include "Plane.h"
+#include "Node.h"
+#include "Edge.h"
+#include "Graph.h"
 
 using namespace Eigen;
 
@@ -41,6 +44,8 @@ protected:
     std::vector<Vertex *> _centroids;
     // list of all computed tangent planes with their associated normal
     std::vector<Plane *> _planes;
+    // Graph used to reorientate the tangent planes
+    Graph g;
     // computed Mesh
     Mesh _result;
 

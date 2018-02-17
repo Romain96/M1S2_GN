@@ -128,7 +128,48 @@ void Graph::setEdges(std::vector<Edge *> &edges)
 // Method(s)
 //-----------------------------------------------------------------------------
 
+/**
+ * @brief Graph::buildGraph
+ * @param t Octree built upon centroids
+ * @param centroids list of all centroids
+ * @param planes list of all associated tangent planes
+ */
 void Graph::buildGraph(Octree *t, std::vector<Vertex *> &centroids, std::vector<Plane *> &planes)
 {
-    // TODO
+    // building all nodes before the edges
+    __buildNodes(centroids, planes);
+
+    // For each node we find the k nearest neighbours
+}
+
+//-----------------------------------------------------------------------------
+// Internal Method(s)
+//-----------------------------------------------------------------------------
+
+/**
+ * @brief Graph::__buildNodes
+ * @param centroids list of all centroids
+ * @param planes list of all tangent planes
+ */
+void Graph::__buildNodes(std::vector<Vertex *> &centroids, std::vector<Plane *> &planes)
+{
+    // just creating one node per centroid/tangent plane
+    // centroids and tangent planes are stored in the same order points were
+    // so the resulting node list will be ordered as so
+
+    Node *n;
+    std::vector<Vertex *>::iterator centroidIterator = centroids.begin();
+    std::vector<Plane *>::iterator planeIterator = planes.begin();
+    std::cout << "building nodes" << std::endl;
+
+    while (centroidIterator != centroids.end() && planeIterator != planes.end())
+    {
+        n = new Node((*centroidIterator),(*planeIterator));
+        _nodes.push_back(n);
+
+        centroidIterator++;
+        planeIterator++;
+    }
+
+    std::cout << _nodes.size() << " nodes created" << std::endl;
 }
