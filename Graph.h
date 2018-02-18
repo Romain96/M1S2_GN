@@ -17,6 +17,7 @@
 #include "Edge.h"
 #include "Octree.h"
 #include "Vertex.h"
+#include "DisjointSets.h"
 
 /**
  * @brief The Graph class

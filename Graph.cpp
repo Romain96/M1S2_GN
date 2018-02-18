@@ -8,9 +8,11 @@
 // STL
 #include <vector>
 #include <map>
+#include <algorithm>
 #include <bits/stdc++.h>
 
 #include "Graph.h"
+#include "DisjointSets.h"
 
 //-----------------------------------------------------------------------------
 // Constant(s)
@@ -211,6 +213,31 @@ void Graph::buildMinimumSpanningTree()
 {
     // objective is to minimize the weight of the graph
     float mstWeight = 0.f;
+
+    // sorting edges in increasing weight order
+    std::sort(_edges.begin(), _edges.end());
+
+    // creating disjoint sets
+    DisjointSets ds(_nodes.size(), _nodes);
+
+    std::vector<Edge *>::iterator edgeIterator;
+    for (edgeIterator = _edges.begin(); edgeIterator != _edges.end(); edgeIterator++)
+    {
+        Node *u = (*edgeIterator)->getLeftNode();
+        Node *v = (*edgeIterator)->getRightNode();
+
+        Node *set_u = ds.DS_find(u);
+        Node *set_v = ds.DS_find(v);
+
+        if (set_u != set_v)
+        {
+            // updating MST weight
+            mstWeight += (*edgeIterator)->getWeight();
+
+            // merge two sets
+            ds.DS_merge(set_u, set_v);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
