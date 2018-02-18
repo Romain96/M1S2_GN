@@ -34,6 +34,8 @@ class MeshReconstructor
 {
 private:
     int _k;
+    int _iterations;
+    float _size;
 
 protected:
     // list of all vertices (point cloud)
@@ -57,6 +59,8 @@ public:
 
     // getter(s)
     int getK();
+    int getIterations();
+    float getSize();
     Octree *getPointTree();
     Octree *getCentroidTree();
     std::vector<Vertex *>& getCentroids();
@@ -65,6 +69,8 @@ public:
 
     // setter(s)
     void setK(int k);
+    void setIterations(int it);
+    void setSize(float size);
     void setPointTree(Octree *t);
     void setCentroidTree(Octree *t);
     void setCentroids(std::vector<Vertex *>& centroids);
@@ -72,7 +78,8 @@ public:
     void setComputedMesh(Mesh& m);
 
     // method(s)
-    void buildPointTree();
+    void buildPointTreeWithIterations();
+    void buildPointTreeWithSize();
     void computeCentroidsAndTangentPlanes();
     void buildCentroidTree();
     void buildGraph();

@@ -26,8 +26,10 @@ int main()
 
     // MeshReconstructor test
     MeshReconstructor mr(m.getVertices());
-    mr.setK(2);
-    mr.buildPointTree();
+    // parameters : k = 10, Octree built with 2 iterations (64 leaves)
+    mr.setK(10);
+    mr.setIterations(2);
+    mr.buildPointTreeWithIterations();
     mr.computeCentroidsAndTangentPlanes();
     mr.buildCentroidTree();
     mr.buildGraph();

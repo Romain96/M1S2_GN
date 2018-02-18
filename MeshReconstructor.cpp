@@ -50,6 +50,24 @@ int MeshReconstructor::getK()
 }
 
 /**
+ * @brief MeshReconstructor::getIterations
+ * @return the number of iterations used to build the Octrees
+ */
+int MeshReconstructor::getIterations()
+{
+    return _iterations;
+}
+
+/**
+ * @brief MeshReconstructor::getSize
+ * @return the min size used to build the Octrees
+ */
+float MeshReconstructor::getSize()
+{
+    return _size;
+}
+
+/**
  * @brief MeshReconstructor::getPointTree
  * @return a pointer to the Octree based on the point cloud
  */
@@ -108,6 +126,24 @@ void MeshReconstructor::setK(int k)
 }
 
 /**
+ * @brief MeshReconstructor::setIterations
+ * @param it number of iterations too build the Octrees
+ */
+void MeshReconstructor::setIterations(int it)
+{
+    _iterations = it;
+}
+
+/**
+ * @brief MeshReconstructor::setSize
+ * @param size min size to reach when building the Octrees
+ */
+void MeshReconstructor::setSize(float size)
+{
+    _size = size;
+}
+
+/**
  * @brief MeshReconstructor::setPointTree
  * @param t new Octree based on the point cloud
  */
@@ -159,11 +195,21 @@ void MeshReconstructor::setComputedMesh(Mesh &m)
 /**
  * @brief MeshReconstructor::buildPointTree
  */
-void MeshReconstructor::buildPointTree()
+void MeshReconstructor::buildPointTreeWithIterations()
 {
     _pointTree = new Octree();
     _pointTree->findSpaceBorders(_points);
-    _pointTree->constructWithIterations(_k, _points);
+    _pointTree->constructWithIterations(_iterations, _points);
+}
+
+/**
+ * @brief MeshReconstructor::buildPointTreeWithSize
+ */
+void MeshReconstructor::buildPointTreeWithSize()
+{
+    _pointTree = new Octree();
+    _pointTree->findSpaceBorders(_points);
+    _pointTree->constructWithMinSize(_size, _points);
 }
 
 /**
@@ -198,9 +244,10 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes()
         }
 
         // storing the centroid in _centroids
-        centroid = (1.f / neighbours.size()) * centroid;
+        centroid = centroid / (float)_k;
         _centroids.push_back(new Vertex(id++, centroid.x, centroid.y, centroid.z));
-        //std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
+        std::cout << "point : " << (*pointIterator)->getPosition().x << ", " << (*pointIterator)->getPosition().y << ", " << (*pointIterator)->getPosition().z << std::endl;
+        std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
 
         // computing the covariance matrix
         for (unsigned int i = 0; i < neighbours.size(); i++)
