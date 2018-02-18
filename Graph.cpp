@@ -8,6 +8,7 @@
 // STL
 #include <vector>
 #include <map>
+#include <bits/stdc++.h>
 
 #include "Graph.h"
 
@@ -129,6 +130,24 @@ void Graph::setEdges(std::vector<Edge *> &edges)
 //-----------------------------------------------------------------------------
 
 /**
+ * @brief Graph::addNode
+ * @param n new Node
+ */
+void Graph::addNode(Node *n)
+{
+    _nodes.push_back(n);
+}
+
+/**
+ * @brief Graph::addEdge
+ * @param e new Edge
+ */
+void Graph::addEdge(Edge *e)
+{
+    _edges.push_back(e);
+}
+
+/**
  * @brief Graph::buildGraph
  * @param k number of neighbours (kNearestNeighbours search)
  * @param t Octree built upon centroids
@@ -183,6 +202,15 @@ void Graph::buildGraph(int k, Octree *t, std::vector<Vertex *> &centroids, std::
                   << _edges[i]->getWeight() << std::endl;
     }
     */
+}
+
+/**
+ * @brief Graph::buildMinimumSpanningTree builds a MST using Kruskal's algorithm
+ */
+void Graph::buildMinimumSpanningTree()
+{
+    // objective is to minimize the weight of the graph
+    float mstWeight = 0.f;
 }
 
 //-----------------------------------------------------------------------------
