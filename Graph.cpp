@@ -175,12 +175,14 @@ void Graph::buildGraph(int k, Octree *t, std::vector<Vertex *> &centroids, std::
 
     std::cout << _edges.size() << " edges created" << std::endl;
 
+    /*
     for (unsigned int i = 0; i < _edges.size(); i++)
     {
         std::cout << "edge " << _edges[i]->getLeftNode()->getCentroid()->getId() << " to "
                   << _edges[i]->getRightNode()->getCentroid()->getId() << " with weight"
                   << _edges[i]->getWeight() << std::endl;
     }
+    */
 }
 
 //-----------------------------------------------------------------------------
