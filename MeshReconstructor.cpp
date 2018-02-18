@@ -31,6 +31,9 @@ using namespace Eigen;
  * @param vertices point cloud
  */
 MeshReconstructor::MeshReconstructor(std::vector<Vertex *> &vertices) :
+    _k(10),
+    _iterations(2),
+    _size(0.5f),
     _points(vertices)
 {
     // nothing
@@ -246,8 +249,8 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes()
         // storing the centroid in _centroids
         centroid = centroid / (float)_k;
         _centroids.push_back(new Vertex(id++, centroid.x, centroid.y, centroid.z));
-        std::cout << "point : " << (*pointIterator)->getPosition().x << ", " << (*pointIterator)->getPosition().y << ", " << (*pointIterator)->getPosition().z << std::endl;
-        std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
+        //std::cout << "point : " << (*pointIterator)->getPosition().x << ", " << (*pointIterator)->getPosition().y << ", " << (*pointIterator)->getPosition().z << std::endl;
+        //std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
 
         // computing the covariance matrix
         for (unsigned int i = 0; i < neighbours.size(); i++)
@@ -293,13 +296,23 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes()
 }
 
 /**
- * @brief MeshReconstructor::buildCentroidTree
+ * @brief MeshReconstructor::buildCentroidTreeWithIterations
  */
-void MeshReconstructor::buildCentroidTree()
+void MeshReconstructor::buildCentroidTreeWithIterations()
 {
     _centroidTree = new Octree();
     _centroidTree->findSpaceBorders(_centroids);
-    _centroidTree->constructWithIterations(_k, _centroids);
+    _centroidTree->constructWithIterations(_iterations, _centroids);
+}
+
+/**
+ * @brief MeshReconstructor::buildCentroidTreeWithSize
+ */
+void MeshReconstructor::buildCentroidTreeWithSize()
+{
+    _centroidTree = new Octree();
+    _centroidTree->findSpaceBorders(_centroids);
+    _centroidTree->constructWithMinSize(_size, _centroids);
 }
 
 /**

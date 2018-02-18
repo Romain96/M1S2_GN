@@ -81,7 +81,8 @@ public:
     void buildPointTreeWithIterations();
     void buildPointTreeWithSize();
     void computeCentroidsAndTangentPlanes();
-    void buildCentroidTree();
+    void buildCentroidTreeWithIterations();
+    void buildCentroidTreeWithSize();
     void buildGraph();
     void reorientateTangentPlanes();
 

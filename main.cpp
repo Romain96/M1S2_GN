@@ -31,7 +31,7 @@ int main()
     mr.setIterations(2);
     mr.buildPointTreeWithIterations();
     mr.computeCentroidsAndTangentPlanes();
-    mr.buildCentroidTree();
+    mr.buildCentroidTreeWithIterations();
     mr.buildGraph();
 
     // reading test
