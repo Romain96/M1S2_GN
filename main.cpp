@@ -33,6 +33,7 @@ int main()
     mr.computeCentroidsAndTangentPlanes();
     mr.buildCentroidTreeWithIterations();
     mr.buildGraph();
+    mr.reorientateTangentPlanes();
 
     // reading test
     //m.importOFF("../OFF/block.off");

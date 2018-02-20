@@ -320,6 +320,16 @@ void MeshReconstructor::buildCentroidTreeWithSize()
  */
 void MeshReconstructor::buildGraph()
 {
-    g = Graph();
-    g.buildGraph(_k, _centroidTree, _centroids, _planes);
+    _graph = Graph();
+    _graph.buildGraph(_k, _centroidTree, _centroids, _planes);
+}
+
+void MeshReconstructor::reorientateTangentPlanes()
+{
+    // first compute the MST from the graph
+    std::cout << "building MST" << std::endl;
+    _mst = _graph.buildMinimumSpanningTree();
+    std::cout << "MST built" << std::endl;
+
+    // then reorientate the planes
 }
