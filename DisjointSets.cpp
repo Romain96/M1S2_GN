@@ -5,6 +5,9 @@
  * 2018-2019
  */
 
+// STL
+#include <iostream>
+
 #include "Node.h"
 #include "DisjointSets.h"
 
@@ -47,15 +50,17 @@ Node *DisjointSets::DS_find(Node *u)
  */
 void DisjointSets::DS_merge(Node *x, Node *y)
 {
-    Node *px = DS_find(x);
-    Node *py = DS_find(y);
+    Node *xroot = DS_find(x);
+    Node *yroot = DS_find(y);
 
-    if (rnk[px->getCentroid()->getId()] > rnk[py->getCentroid()->getId()])
-        parent[py->getCentroid()->getId()] = px;
-    else
-        parent[px->getCentroid()->getId()] = py;
-
-    if (rnk[px->getCentroid()->getId()] == rnk[py->getCentroid()->getId()])
-        rnk[py->getCentroid()->getId()]++;
+    if (rnk[xroot->getCentroid()->getId()] < rnk[yroot->getCentroid()->getId()])
+        parent[xroot->getCentroid()->getId()] = yroot;
+    else if (rnk[xroot->getCentroid()->getId()] > rnk[yroot->getCentroid()->getId()])
+        parent[yroot->getCentroid()->getId()] = xroot;
+    else    // rank of x == rank of y
+    {
+        parent[yroot->getCentroid()->getId()] = xroot;
+        rnk[xroot->getCentroid()->getId()]++;
+    }
 }
 

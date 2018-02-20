@@ -220,31 +220,10 @@ struct sortCompare
  */
 Graph *Graph::buildMinimumSpanningTree()
 {
-    // TEST
-    for (unsigned int i = 0; i < _nodes.size(); i++)
-    {
-        unsigned int left = 0;
-        unsigned int right = 0;
-        for (unsigned int j = 0; j < _edges.size(); j++)
-        {
-            if (_edges[j]->getLeftNode()->getCentroid()->getId() == _nodes[i]->getCentroid()->getId())
-                left++;
-            if (_edges[j]->getRightNode()->getCentroid()->getId() == _nodes[i]->getCentroid()->getId())
-                right++;
-        }
-        if (left == 0)
-            std::cerr << "node " << _nodes[i]->getCentroid()->getId() << " is not connected !" << std::endl;
-        if (right == 0)
-            std::cerr << "node " << _nodes[i]->getCentroid()->getId() << " is not connected !" << std::endl;
-    }
-
     // building a new Graph and adding each nodes of the current one
     Graph *test = new Graph();
     for (unsigned int i = 0; i < _nodes.size(); i++)
         test->addNode(_nodes[i]);
-
-    // objective is to minimize the weight of the graph
-    float mstWeight = 0.f;
 
     // sorting edges in increasing weight order
     std::sort(_edges.begin(), _edges.end(), sortCompare());
@@ -263,9 +242,6 @@ Graph *Graph::buildMinimumSpanningTree()
 
         if (set_u != set_v)
         {
-            // updating MST weight
-            mstWeight += (*edgeIterator)->getWeight();
-
             // adding this edge to the MST
             Edge *e = new Edge(test->getNodeAtIndex((*edgeIterator)->getLeftNode()->getCentroid()->getId()),
                               test->getNodeAtIndex((*edgeIterator)->getRightNode()->getCentroid()->getId()),
