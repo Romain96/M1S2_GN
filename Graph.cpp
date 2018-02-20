@@ -243,10 +243,7 @@ Graph *Graph::buildMinimumSpanningTree()
         if (set_u != set_v)
         {
             // adding this edge to the MST
-            Edge *e = new Edge(test->getNodeAtIndex((*edgeIterator)->getLeftNode()->getCentroid()->getId()),
-                              test->getNodeAtIndex((*edgeIterator)->getRightNode()->getCentroid()->getId()),
-                              (*edgeIterator)->getWeight());
-            test->addEdge(e);
+            test->addEdge((*edgeIterator));
 
             // merge two sets
             ds.DS_merge(set_u, set_v);
@@ -258,6 +255,16 @@ Graph *Graph::buildMinimumSpanningTree()
     {
         std::cout << test->getEdgeAtIndex(i)->getLeftNode()->getCentroid()->getId() << "-"<< test->getEdgeAtIndex(i)->getRightNode()->getCentroid()->getId() << std::endl;
     }*/
+
+    int max = -1;
+    for (unsigned int i = 0; i < test->getNodes().size(); i++)
+    {
+        if (ds.rnk[i] > max)
+            max = ds.rnk[i];
+        //std::cout << "rnk[" << i << "] = " << ds.rnk[i] << std::endl;
+    }
+    std::cout << "max is " << max << std::endl;
+
 
     std::cout << "MST has " << test->getNodes().size() << " nodes" << std::endl;
     std::cout << "MST has " << test->getEdges().size() << " edges" << std::endl;

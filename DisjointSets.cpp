@@ -19,12 +19,12 @@
 DisjointSets::DisjointSets(int n, std::vector<Node *> &nodes)
 {
     this->n = n;
-    parent = new Node *[n + 1];
-    rnk = new int[n + 1];
+    parent = new Node *[n - 1];
+    rnk = new int[n - 1];
 
     // initially all vertices are in
     // different sets and have a rank of 0
-    for (int i = 0; i <= n; i++)
+    for (int i = 0; i < n; i++)
     {
         rnk[i] = 0;
         parent[i] = nodes[i];
