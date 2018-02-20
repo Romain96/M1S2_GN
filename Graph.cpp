@@ -178,6 +178,7 @@ void Graph::buildGraph(int k, Octree *t, std::vector<Vertex *> &centroids, std::
         {
             // if centroid ID is inferior to the current treated centroid then
             // the edge between it and the current one has already been created
+            /*
             if (neighbours[i].first->getId() > (*nodeIterator)->getCentroid()->getId())
             {
                 // the weight is 1 - |ni . nj| where
@@ -188,23 +189,30 @@ void Graph::buildGraph(int k, Octree *t, std::vector<Vertex *> &centroids, std::
                 e = new Edge((*nodeIterator), _nodes[neighbours[i].first->getId()], weight);
 
                 _edges.push_back(e);
-            }
+            }*/
+            weight = 1.f - fabs(glm::dot((*nodeIterator)->getPlane()->getEigenvector3(),
+                                         _nodes[neighbours[i].first->getId()]->getPlane()->getEigenvector3()));
+            e = new Edge((*nodeIterator), _nodes[neighbours[i].first->getId()], weight);
+
+            _edges.push_back(e);
         }
 
         nodeIterator++;
     }
 
     std::cout << _edges.size() << " edges created" << std::endl;
-
-    /*
-    for (unsigned int i = 0; i < _edges.size(); i++)
-    {
-        std::cout << "edge " << _edges[i]->getLeftNode()->getCentroid()->getId() << " to "
-                  << _edges[i]->getRightNode()->getCentroid()->getId() << " with weight"
-                  << _edges[i]->getWeight() << std::endl;
-    }
-    */
 }
+
+/**
+ * @brief The sortCompare struct for std:sort used in buildMinimumSpanningTree
+ */
+struct sortCompare
+{
+    bool operator() (Edge *e1, Edge *e2)
+    {
+        return e1->getWeight() < e2->getWeight();
+    }
+};
 
 /**
  * @brief Graph::buildMinimumSpanningTree builds a MST using Kruskal's algorithm
@@ -212,6 +220,24 @@ void Graph::buildGraph(int k, Octree *t, std::vector<Vertex *> &centroids, std::
  */
 Graph *Graph::buildMinimumSpanningTree()
 {
+    // TEST
+    for (unsigned int i = 0; i < _nodes.size(); i++)
+    {
+        unsigned int left = 0;
+        unsigned int right = 0;
+        for (unsigned int j = 0; j < _edges.size(); j++)
+        {
+            if (_edges[j]->getLeftNode()->getCentroid()->getId() == _nodes[i]->getCentroid()->getId())
+                left++;
+            if (_edges[j]->getRightNode()->getCentroid()->getId() == _nodes[i]->getCentroid()->getId())
+                right++;
+        }
+        if (left == 0)
+            std::cerr << "node " << _nodes[i]->getCentroid()->getId() << " is not connected !" << std::endl;
+        if (right == 0)
+            std::cerr << "node " << _nodes[i]->getCentroid()->getId() << " is not connected !" << std::endl;
+    }
+
     // building a new Graph and adding each nodes of the current one
     Graph *test = new Graph();
     for (unsigned int i = 0; i < _nodes.size(); i++)
@@ -221,7 +247,7 @@ Graph *Graph::buildMinimumSpanningTree()
     float mstWeight = 0.f;
 
     // sorting edges in increasing weight order
-    std::sort(_edges.begin(), _edges.end());
+    std::sort(_edges.begin(), _edges.end(), sortCompare());
 
     // creating disjoint sets
     DisjointSets ds(_nodes.size(), _nodes);
@@ -241,8 +267,6 @@ Graph *Graph::buildMinimumSpanningTree()
             mstWeight += (*edgeIterator)->getWeight();
 
             // adding this edge to the MST
-            //std::cout << "test " << (*edgeIterator)->getLeftNode()->getCentroid()->getId() << " to " << (*edgeIterator)->getRightNode()->getCentroid()->getId() << std::endl;
-
             Edge *e = new Edge(test->getNodeAtIndex((*edgeIterator)->getLeftNode()->getCentroid()->getId()),
                               test->getNodeAtIndex((*edgeIterator)->getRightNode()->getCentroid()->getId()),
                               (*edgeIterator)->getWeight());
@@ -252,10 +276,16 @@ Graph *Graph::buildMinimumSpanningTree()
             ds.DS_merge(set_u, set_v);
         }
     }
+/*
+    // printing test
+    for (unsigned int i = 0; i < test->getEdges().size(); i++)
+    {
+        std::cout << test->getEdgeAtIndex(i)->getLeftNode()->getCentroid()->getId() << "-"<< test->getEdgeAtIndex(i)->getRightNode()->getCentroid()->getId() << std::endl;
+    }*/
+
+    std::cout << "MST has " << test->getNodes().size() << " nodes" << std::endl;
+    std::cout << "MST has " << test->getEdges().size() << " edges" << std::endl;
     return test;
-
-    // test
-
 }
 
 //-----------------------------------------------------------------------------
