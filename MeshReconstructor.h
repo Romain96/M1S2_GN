@@ -51,7 +51,7 @@ protected:
     // Graph used to reorientate the tangent planes
     Graph _graph;
     // Minimum Spanning Tree (MST) derived from _graph and used to reorientate tangent planes
-    Graph _mst;
+    Graph *_mst;
     // computed Mesh
     Mesh _result;
 

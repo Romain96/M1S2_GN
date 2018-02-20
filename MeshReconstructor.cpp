@@ -12,6 +12,7 @@
 
 #include "Octree.h"
 #include "Plane.h"
+#include "Graph.h"
 
 // Eigen
 #include "Eigen/Dense"

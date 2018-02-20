@@ -208,16 +208,14 @@ void Graph::buildGraph(int k, Octree *t, std::vector<Vertex *> &centroids, std::
 
 /**
  * @brief Graph::buildMinimumSpanningTree builds a MST using Kruskal's algorithm
- * @return a new Graph which is a MST (a tree)
+ * @return a new Graph which is a MST
  */
-Graph &Graph::buildMinimumSpanningTree()
+Graph *Graph::buildMinimumSpanningTree()
 {
     // building a new Graph and adding each nodes of the current one
-    static Graph mst;
+    Graph *test = new Graph();
     for (unsigned int i = 0; i < _nodes.size(); i++)
-    {
-        mst.addNode(getNodeAtIndex(i));
-    }
+        test->addNode(_nodes[i]);
 
     // objective is to minimize the weight of the graph
     float mstWeight = 0.f;
@@ -243,15 +241,21 @@ Graph &Graph::buildMinimumSpanningTree()
             mstWeight += (*edgeIterator)->getWeight();
 
             // adding this edge to the MST
-            mst.addEdge((*edgeIterator));
+            //std::cout << "test " << (*edgeIterator)->getLeftNode()->getCentroid()->getId() << " to " << (*edgeIterator)->getRightNode()->getCentroid()->getId() << std::endl;
+
+            Edge *e = new Edge(test->getNodeAtIndex((*edgeIterator)->getLeftNode()->getCentroid()->getId()),
+                              test->getNodeAtIndex((*edgeIterator)->getRightNode()->getCentroid()->getId()),
+                              (*edgeIterator)->getWeight());
+            test->addEdge(e);
 
             // merge two sets
             ds.DS_merge(set_u, set_v);
         }
     }
+    return test;
 
-    std::cout << "MST has " << mst.getNodes().size() << " nodes and " << mst.getEdges().size() << " edges" << std::endl;
-    return mst;
+    // test
+
 }
 
 //-----------------------------------------------------------------------------
