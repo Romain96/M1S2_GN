@@ -203,6 +203,39 @@ void Graph::buildGraph(int k, Octree *t, std::vector<Vertex *> &centroids, std::
     std::cout << _edges.size() << " edges created" << std::endl;
 }
 
+// TEST TO SOLVE PROBLEM WITH MST TRYING TO BUILD FULL GRAPH -> MST -> RIEMANNIAN GRAPH
+// INSTEAD OF GRAPH WITH NEIGHBOURS -> MST/RIEMANNIAN
+void Graph::buildGraphFull(int k, Octree *t, std::vector<Vertex *> &centroids, std::vector<Plane *> &planes)
+{
+    // building all nodes before the edges
+    __buildNodes(centroids, planes);
+
+    std::vector<Node *>::iterator nodeIterator1;
+    std::vector<Node *>::iterator nodeIterator2;
+    Edge *e;
+    float weight;
+
+    // foe each centroid
+    for (nodeIterator1 = _nodes.begin(); nodeIterator1 != _nodes.end(); nodeIterator1++)
+    {
+        // for each centroid != of the referencial centroid
+        for (nodeIterator2 = _nodes.begin(); nodeIterator2 != _nodes.end(); nodeIterator2++)
+        {
+            if ((*nodeIterator2)->getCentroid()->getId() != (*nodeIterator1)->getCentroid()->getId())
+            {
+                // compute weight between two nodes and create an edge
+                float weight = 1.f - fabs(glm::dot((*nodeIterator1)->getPlane()->getEigenvector3(),
+                                                   (*nodeIterator2)->getPlane()->getEigenvector3()));
+
+                Edge *e = new Edge((*nodeIterator1), (*nodeIterator2), weight);
+                _edges.push_back(e);
+            }
+        }
+    }
+
+    std::cout << _edges.size() << " edges created with full graph" << std::endl;
+}
+
 /**
  * @brief The sortCompare struct for std:sort used in buildMinimumSpanningTree
  */

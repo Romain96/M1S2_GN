@@ -50,6 +50,7 @@ public:
     void addNode(Node *n);
     void addEdge(Edge *e);
     void buildGraph(int k, Octree *t, std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
+    void buildGraphFull(int k, Octree *t, std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
     Graph *buildMinimumSpanningTree();
 
 private:

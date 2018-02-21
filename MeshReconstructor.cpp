@@ -322,7 +322,8 @@ void MeshReconstructor::buildCentroidTreeWithSize()
 void MeshReconstructor::buildGraph()
 {
     _graph = Graph();
-    _graph.buildGraph(_k, _centroidTree, _centroids, _planes);
+    //_graph.buildGraph(_k, _centroidTree, _centroids, _planes);
+    _graph.buildGraphFull(_k, _centroidTree, _centroids, _planes);
 }
 
 void MeshReconstructor::reorientateTangentPlanes()
