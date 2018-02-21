@@ -20,38 +20,43 @@ DisjointSets::DisjointSets(int n, std::vector<Node *> &nodes)
 {
     this->n = n;
     parent = new Node *[n - 1];
-    rnk = new int[n - 1];
 
     // initially all vertices are in
     // different sets and have a rank of 0
     for (int i = 0; i < n; i++)
     {
-        rnk[i] = 0;
         parent[i] = nodes[i];
     }
 }
 
 /**
- * @brief DisjointSets::DS_find
+ * @brief DisjointSets::find_set
  * @param u node
  * @return the parent node of u
  */
-Node *DisjointSets::DS_find(Node *u)
+Node *DisjointSets::find_set(Node *u)
 {
+    if (u == parent[u->getCentroid()->getId()])
+        return parent[u->getCentroid()->getId()];
+    else
+        return find_set(parent[u->getCentroid()->getId()]);
+
+    /*
     if (u != parent[u->getCentroid()->getId()])
-        parent[u->getCentroid()->getId()] = DS_find(parent[u->getCentroid()->getId()]);
-    return parent[u->getCentroid()->getId()];
+        parent[u->getCentroid()->getId()] = find_set(parent[u->getCentroid()->getId()]);
+    return parent[u->getCentroid()->getId()];*/
 }
 
 /**
- * @brief DisjointSets::DS_merge
+ * @brief DisjointSets::union_set
  * @param x node x
  * @param y node y
  */
-void DisjointSets::DS_merge(Node *x, Node *y)
+void DisjointSets::union_set(Node *x, Node *y)
 {
-    Node *xroot = DS_find(x);
-    Node *yroot = DS_find(y);
+    /*
+    Node *xroot = find_set(x);
+    Node *yroot = find_set(y);
 
     if (rnk[xroot->getCentroid()->getId()] < rnk[yroot->getCentroid()->getId()])
         parent[xroot->getCentroid()->getId()] = yroot;
@@ -62,5 +67,7 @@ void DisjointSets::DS_merge(Node *x, Node *y)
         parent[yroot->getCentroid()->getId()] = xroot;
         rnk[xroot->getCentroid()->getId()]++;
     }
+    */
+    parent[x->getCentroid()->getId()] = parent[y->getCentroid()->getId()];
 }
 

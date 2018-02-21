@@ -14,8 +14,6 @@ struct DisjointSets
 {
     // list of all parents
     Node **parent;
-    // list of all ranks
-    int *rnk;
     // number of nodes in graph
     int n;
 
@@ -23,10 +21,10 @@ struct DisjointSets
     DisjointSets(int n, std::vector<Node *>& nodes);
 
     // find parent of Node u
-    Node *DS_find(Node *u);
+    Node *find_set(Node *u);
 
     // merge
-    void DS_merge(Node *x, Node *y);
+    void union_set(Node *x, Node *y);
 };
 
 #endif // DISJOINTSETS_H
