@@ -340,11 +340,11 @@ void MeshReconstructor::reorientateTangentPlanes()
 }
 
 /**
- * @brief MeshReconstructor::__findNearestPlane
+ * @brief MeshReconstructor::__findNearestTangentPlaneAsCentroid
  * @param p point of reference
  * @return a pointer to the closest tangent plane from p
  */
-Plane *MeshReconstructor::__findNearestPlane(Vertex *p)
+Vertex *MeshReconstructor::__findNearestTangentPlaneAsCentroid(Vertex *p)
 {
     // we consider that the closest tangent plane from p is the tangent plane
     // whom associated centroid is the closest to p
@@ -409,7 +409,21 @@ Plane *MeshReconstructor::__findNearestPlane(Vertex *p)
         }
     }
 
-    // we return the Plane at index centroid->id since
-    // Planes and Centroids are indexed in the same order
-    return _planes[closestCentroid->getId()];
+    return closestCentroid;
+}
+
+/**
+ * @brief MeshReconstructor::__signedDistanceToClosestTangentPlane
+ * @param p point of reference
+ * @return the signed distance to the closest tangent plane from p
+ */
+float MeshReconstructor::__signedDistanceToClosestTangentPlane(Vertex *p)
+{
+    // retrieving the closest tangent plane with __findNearestPlane
+    Vertex *centroid = __findNearestTangentPlaneAsCentroid(p);
+
+    // returning (p - oi) . ni where
+    // - oi is the center of the closest tangent plane
+    // - ni is the normal associated to this nearest tangent plane (eigenvector3)
+    return glm::dot((p->getPosition() - centroid->getPosition()), _planes[centroid->getId()]->getEigenvector3());
 }

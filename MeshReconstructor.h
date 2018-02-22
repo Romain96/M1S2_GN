@@ -88,7 +88,8 @@ public:
     void buildGraph();
     void reorientateTangentPlanes();
 
-    Plane *__findNearestPlane(Vertex *p);
+    Vertex *__findNearestTangentPlaneAsCentroid(Vertex *p);
+    float __signedDistanceToClosestTangentPlane(Vertex *p);
 };
 
 #endif // MESHRECONSTRUCTOR_H
