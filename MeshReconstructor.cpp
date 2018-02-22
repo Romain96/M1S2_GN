@@ -326,6 +326,9 @@ void MeshReconstructor::buildGraph()
     _graph.buildGraphFull(_k, _centroidTree, _centroids, _planes);
 }
 
+/**
+ * @brief MeshReconstructor::reorientateTangentPlanes
+ */
 void MeshReconstructor::reorientateTangentPlanes()
 {
     // first compute the MST from the graph
@@ -334,4 +337,79 @@ void MeshReconstructor::reorientateTangentPlanes()
     std::cout << "MST built" << std::endl;
 
     // then reorientate the planes
+}
+
+/**
+ * @brief MeshReconstructor::__findNearestPlane
+ * @param p point of reference
+ * @return a pointer to the closest tangent plane from p
+ */
+Plane *MeshReconstructor::__findNearestPlane(Vertex *p)
+{
+    // we consider that the closest tangent plane from p is the tangent plane
+    // whom associated centroid is the closest to p
+    // thus using the centroid octree to quicken the search
+
+    // first searching in which leaf of the centroid octree is p
+    Octree *t = _centroidTree;
+    while (!t->leaf())
+    {
+        if (Octree::isInside(p, t->getLowerNE()))
+        {
+            t = t->getLowerNE();
+        }
+        else if (Octree::isInside(p, t->getLowerNW()))
+        {
+            t = t->getLowerNW();
+        }
+        else if (Octree::isInside(p, t->getLowerSE()))
+        {
+            t = t->getLowerSE();
+        }
+        else if (Octree::isInside(p, t->getLowerSW()))
+        {
+            t = t->getLowerSW();
+        }
+        else if (Octree::isInside(p, t->getUpperNE()))
+        {
+            t = t->getUpperNE();
+        }
+        else if (Octree::isInside(p, t->getUpperNW()))
+        {
+            t = t->getUpperNW();
+        }
+        else if (Octree::isInside(p, t->getUpperSE()))
+        {
+            t = t->getUpperSE();
+        }
+        else if (Octree::isInside(p, t->getUpperSW()))
+        {
+            t = t->getUpperSW();
+        }
+        else
+        {
+            std::cerr << "MeshReconstructor::__findNearestPlane error point is not inside one of the 8 children !" << std::endl;
+            break;
+        }
+    }
+
+    // finding the closest centroid in this leaf
+    float dist;
+    float distMin = 10000.f;
+    Vertex *closestCentroid;
+    std::vector<Vertex *>::iterator it;
+
+    for (it = t->getPoints().begin(); it != t->getPoints().end(); it++)
+    {
+        dist = Vertex::distance3(p->getPosition(), (*it)->getPosition());
+        if (dist < distMin)
+        {
+            distMin = dist;
+            closestCentroid = (*it);
+        }
+    }
+
+    // we return the Plane at index centroid->id since
+    // Planes and Centroids are indexed in the same order
+    return _planes[closestCentroid->getId()];
 }

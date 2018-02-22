@@ -88,8 +88,7 @@ public:
     void buildGraph();
     void reorientateTangentPlanes();
 
-private:
-    void __buildCentroidOctree(std::vector<glm::vec3>& centroids);
+    Plane *__findNearestPlane(Vertex *p);
 };
 
 #endif // MESHRECONSTRUCTOR_H

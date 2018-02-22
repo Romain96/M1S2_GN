@@ -124,10 +124,11 @@ public:
     void constructWithIterations(int k, std::vector<Vertex *>& vertices);
     std::vector<std::pair<Vertex *, float>>& findKNeartestNeighbours(Vertex *ref, int k);
 
+    static bool isInside(Vertex *v, Octree *t);
+
 private:
     // internal method(s)
-    void addPoint(Vertex *v);
-    static bool isInside(Vertex *v, Octree *t);
+    void addPoint(Vertex *v);    
     static void __buildOctreeNode(Octree *t, int depth, std::vector<Vertex *>& vertices);
     static void __findPointsInRegion(Octree *t, std::vector<Vertex *>& vertives);
 };
