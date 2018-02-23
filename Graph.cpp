@@ -218,18 +218,19 @@ void Graph::buildGraphFull(int k, Octree *t, std::vector<Vertex *> &centroids, s
     // foe each centroid
     for (nodeIterator1 = _nodes.begin(); nodeIterator1 != _nodes.end(); nodeIterator1++)
     {
+        nodeIterator2 = nodeIterator1;
+        nodeIterator2++;
         // for each centroid > referencial centroid (otherwise already treated and added an edge)
-        for (nodeIterator2 = _nodes.begin(); nodeIterator2 != _nodes.end(); nodeIterator2++)
-        {
-            if ((*nodeIterator2)->getCentroid()->getId() > (*nodeIterator1)->getCentroid()->getId())
-            {
-                // compute weight between two nodes and create an edge
-                weight = 1.f - fabs(glm::dot((*nodeIterator1)->getPlane()->getEigenvector3(),
-                                                   (*nodeIterator2)->getPlane()->getEigenvector3()));
+        while (nodeIterator2 != _nodes.end())
+        {  
+            // compute weight between two nodes and create an edge
+            weight = 1.f - fabs(glm::dot((*nodeIterator1)->getPlane()->getEigenvector3(),
+                                         (*nodeIterator2)->getPlane()->getEigenvector3()));
 
-                e = new Edge((*nodeIterator1), (*nodeIterator2), weight);
-                _edges.push_back(e);
-            }
+            e = new Edge((*nodeIterator1), (*nodeIterator2), weight);
+            _edges.push_back(e);
+
+            nodeIterator2++;
         }
     }
 
