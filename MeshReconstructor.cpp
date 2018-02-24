@@ -317,25 +317,24 @@ void MeshReconstructor::buildCentroidTreeWithSize()
 }
 
 /**
- * @brief MeshReconstructor::buildGraph
- */
-void MeshReconstructor::buildGraph()
-{
-    _graph = Graph();
-    _graph.buildEuclidianGraph(_centroids, _planes);
-}
-
-/**
  * @brief MeshReconstructor::reorientateTangentPlanes
  */
 void MeshReconstructor::reorientateTangentPlanes()
 {
-    // first compute the MST from the graph
-    std::cout << "building MST" << std::endl;
-    _mst = _graph.buildMinimumSpanningTree();
-    std::cout << "MST built" << std::endl;
+    // first building an Euclidian graph
+    std::cout << "building an Euclidian graph..." << std::endl;
+    _graph->buildEuclidianGraph(_centroids, _planes);
+    std::cout << "done" << std::endl;
 
-    // then reorientate the planes
+    // then compute the MST from the graph
+    std::cout << "building MST..." << std::endl;
+    _graph = _graph->buildMinimumSpanningTree();
+    std::cout << "done" << std::endl;
+
+    // then enhancing the MST with neighbours edges
+    // thus creating a Riemannian graph
+    std::cout << "building Riemannian graph" << std::endl;
+    std::cout << "done" << std::endl;
 }
 
 /**

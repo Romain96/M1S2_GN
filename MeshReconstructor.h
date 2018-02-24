@@ -49,9 +49,7 @@ protected:
     // list of all computed tangent planes with their associated normal
     std::vector<Plane *> _planes;
     // Graph used to reorientate the tangent planes
-    Graph _graph;
-    // Minimum Spanning Tree (MST) derived from _graph and used to reorientate tangent planes
-    Graph *_mst;
+    Graph *_graph;
     // computed Mesh
     Mesh _result;
 
@@ -85,7 +83,6 @@ public:
     void computeCentroidsAndTangentPlanes();
     void buildCentroidTreeWithIterations();
     void buildCentroidTreeWithSize();
-    void buildGraph();
     void reorientateTangentPlanes();
 
     Vertex *__findNearestTangentPlaneAsCentroid(Vertex *p);

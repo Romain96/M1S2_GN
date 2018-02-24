@@ -232,12 +232,6 @@ Graph *Graph::buildMinimumSpanningTree()
             ds.union_set(uRep, vRep);
         }
     }
-/*
-    // printing test
-    for (unsigned int i = 0; i < test->getEdges().size(); i++)
-    {
-        std::cout << test->getEdgeAtIndex(i)->getLeftNode()->getCentroid()->getId() << "-"<< test->getEdgeAtIndex(i)->getRightNode()->getCentroid()->getId() << std::endl;
-    }*/
 
     std::cout << "MST has " << test->getNodes().size() << " nodes" << std::endl;
     std::cout << "MST has " << test->getEdges().size() << " edges" << std::endl;
@@ -263,6 +257,7 @@ void Graph::__buildNodes(std::vector<Vertex *> &centroids, std::vector<Plane *> 
     std::vector<Vertex *>::iterator centroidIterator = centroids.begin();
     std::vector<Plane *>::iterator planeIterator = planes.begin();
     std::cout << "building nodes" << std::endl;
+    _nodes.clear();
 
     while (centroidIterator != centroids.end() && planeIterator != planes.end())
     {
