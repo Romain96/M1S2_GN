@@ -150,62 +150,11 @@ void Graph::addEdge(Edge *e)
 }
 
 /**
- * @brief Graph::buildGraph
- * @param k number of neighbours (kNearestNeighbours search)
- * @param t Octree built upon centroids
- * @param centroids list of all centroids
- * @param planes list of all associated tangent planes
+ * @brief Graph::buildEuclidianGraph builds an Euclidian graph (based on Euclidian distance)
+ * @param centroids list of all computed centroids
+ * @param planes list of all computed tangent planes
  */
-void Graph::buildGraph(int k, Octree *t, std::vector<Vertex *> &centroids, std::vector<Plane *> &planes)
-{
-    // building all nodes before the edges
-    __buildNodes(centroids, planes);
-
-    std::vector<Node *>::iterator nodeIterator = _nodes.begin();
-    std::vector<std::pair<Vertex *, float>> neighbours;
-    Edge *e;
-    float weight;
-
-    // For each node we find the k nearest neighbours
-    while (nodeIterator != _nodes.end())
-    {
-        // retrieving the k nearest neighbours of the centroid
-        neighbours.clear();
-        neighbours = t->findKNeartestNeighbours((*nodeIterator)->getCentroid(), k);
-
-        // for each neighbours which doesn't have been treated
-        for (unsigned int i = 0; i < neighbours.size(); i++)
-        {
-            // if centroid ID is inferior to the current treated centroid then
-            // the edge between it and the current one has already been created
-            /*
-            if (neighbours[i].first->getId() > (*nodeIterator)->getCentroid()->getId())
-            {
-                // the weight is 1 - |ni . nj| where
-                // ni is the normal of the tangent plane of the currently treated node
-                // nj is the normal of the tangent plane of the currently treated neighbour node
-                weight = 1.f - fabs(glm::dot((*nodeIterator)->getPlane()->getEigenvector3(),
-                                             _nodes[neighbours[i].first->getId()]->getPlane()->getEigenvector3()));
-                e = new Edge((*nodeIterator), _nodes[neighbours[i].first->getId()], weight);
-
-                _edges.push_back(e);
-            }*/
-            weight = 1.f - fabs(glm::dot((*nodeIterator)->getPlane()->getEigenvector3(),
-                                         _nodes[neighbours[i].first->getId()]->getPlane()->getEigenvector3()));
-            e = new Edge((*nodeIterator), _nodes[neighbours[i].first->getId()], weight);
-
-            _edges.push_back(e);
-        }
-
-        nodeIterator++;
-    }
-
-    std::cout << _edges.size() << " edges created" << std::endl;
-}
-
-// TEST TO SOLVE PROBLEM WITH MST TRYING TO BUILD FULL GRAPH -> MST -> RIEMANNIAN GRAPH
-// INSTEAD OF GRAPH WITH NEIGHBOURS -> MST/RIEMANNIAN
-void Graph::buildGraphFull(int k, Octree *t, std::vector<Vertex *> &centroids, std::vector<Plane *> &planes)
+void Graph::buildEuclidianGraph(std::vector<Vertex *>& centroids, std::vector<Plane *>& planes)
 {
     // building all nodes before the edges
     __buildNodes(centroids, planes);
