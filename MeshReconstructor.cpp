@@ -337,6 +337,7 @@ void MeshReconstructor::reorientateTangentPlanes()
     // then enhancing the MST with neighbours edges
     // thus creating a Riemannian graph
     std::cout << "building Riemannian graph" << std::endl;
+    _graph->enhanceToRiemannianGraph(_k, _centroidTree);
     std::cout << "done" << std::endl;
 }
 
