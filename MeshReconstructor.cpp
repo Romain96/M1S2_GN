@@ -328,7 +328,10 @@ void MeshReconstructor::reorientateTangentPlanes()
 
     // then compute the MST from the graph
     std::cout << "building MST..." << std::endl;
-    _graph = _graph->buildMinimumSpanningTree();
+    Graph *g = _graph->buildMinimumSpanningTree();
+    _graph->clearNodes();
+    _graph->clearEdges();
+    _graph = g;
     std::cout << "done" << std::endl;
 
     // then enhancing the MST with neighbours edges

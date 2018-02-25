@@ -150,6 +150,22 @@ void Graph::addEdge(Edge *e)
 }
 
 /**
+ * @brief Graph::clearNodes
+ */
+void Graph::clearNodes()
+{
+    _nodes.clear();
+}
+
+/**
+ * @brief Graph::clearEdges
+ */
+void Graph::clearEdges()
+{
+    _edges.clear();
+}
+
+/**
  * @brief Graph::buildEuclidianGraph builds an Euclidian graph (based on Euclidian distance)
  * @param centroids list of all computed centroids
  * @param planes list of all computed tangent planes
