@@ -49,10 +49,12 @@ public:
     // method(s)
     void addNode(Node *n);
     void addEdge(Edge *e);
+    void addEdgeWithRedundancyTest(Edge *e);
     void clearNodes();
     void clearEdges();
     void buildEuclidianGraph(std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
     Graph *buildMinimumSpanningTree();
+    void enhanceToRiemannianGraph(int k, Octree *t, std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
 
 private:
     // internal methods

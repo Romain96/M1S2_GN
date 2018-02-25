@@ -150,6 +150,33 @@ void Graph::addEdge(Edge *e)
 }
 
 /**
+ * @brief Graph::addEdgeWithRedundancyTest
+ * @param e new Edge to add
+ */
+void Graph::addEdgeWithRedundancyTest(Edge *e)
+{
+    // iterating on each edges and addint the edge if
+    // and only if it isn't already in the list of edges
+    std::vector<Edge *>::iterator it;
+
+    for (it = _edges.begin(); it != _edges.end(); it++)
+    {
+        // we have to test both sides since the graph is undirected
+        if ((e->getLeftNode()->getCentroid()->getId() == (*it)->getLeftNode()->getCentroid()->getId() &&
+                e->getRightNode()->getCentroid()->getId() == (*it)->getRightNode()->getCentroid()->getId())
+                ||
+                (e->getLeftNode()->getCentroid()->getId() == (*it)->getRightNode()->getCentroid()->getId() &&
+                 e->getRightNode()->getCentroid()->getId() == (*it)->getLeftNode()->getCentroid()->getId()))
+        {
+                return;
+        }
+    }
+
+    // if we are here, the edge is not already in the list so we add it
+    _edges.push_back(e);
+}
+
+/**
  * @brief Graph::clearNodes
  */
 void Graph::clearNodes()
@@ -252,6 +279,23 @@ Graph *Graph::buildMinimumSpanningTree()
     std::cout << "MST has " << test->getNodes().size() << " nodes" << std::endl;
     std::cout << "MST has " << test->getEdges().size() << " edges" << std::endl;
     return test;
+}
+
+/**
+ * @brief Graph::enhanceToRiemannianGraph
+ * @param k number of neighbours used in k neighbours search
+ * @param t Octree on centroids used in k neighbours search
+ * @param centroids list of all computed centroids
+ * @param planes list of all computed tangent planes
+ */
+void Graph::enhanceToRiemannianGraph(int k, Octree *t, std::vector<Vertex *> &centroids, std::vector<Plane *> &planes)
+{
+    // the objective is to add to the MST
+    // edges between centroids/tangent planes who are
+    // k neighbours
+
+    std::vector<std::pair<Vertex *, float>> neighbours;
+
 }
 
 //-----------------------------------------------------------------------------
