@@ -54,7 +54,7 @@ public:
     void clearEdges();
     void buildEuclidianGraph(std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
     Graph *buildMinimumSpanningTree();
-    void enhanceToRiemannianGraph(int k, Octree *t, std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
+    void enhanceToRiemannianGraph(int k, Octree *t);
 
 private:
     // internal methods

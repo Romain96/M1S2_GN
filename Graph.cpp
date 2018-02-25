@@ -285,17 +285,34 @@ Graph *Graph::buildMinimumSpanningTree()
  * @brief Graph::enhanceToRiemannianGraph
  * @param k number of neighbours used in k neighbours search
  * @param t Octree on centroids used in k neighbours search
- * @param centroids list of all computed centroids
- * @param planes list of all computed tangent planes
  */
-void Graph::enhanceToRiemannianGraph(int k, Octree *t, std::vector<Vertex *> &centroids, std::vector<Plane *> &planes)
+void Graph::enhanceToRiemannianGraph(int k, Octree *t)
 {
     // the objective is to add to the MST
     // edges between centroids/tangent planes who are
     // k neighbours
 
     std::vector<std::pair<Vertex *, float>> neighbours;
+    std::vector<Node *>::iterator nodeIt;
 
+    // for each node we find the k nearest neighbours
+    for (nodeIt = _nodes.begin(); nodeIt != _nodes.end(); nodeIt++)
+    {
+        // retrieving the k nearest neighbours
+        neighbours.clear();
+        neighbours = t->findKNeartestNeighbours((*nodeIt)->getCentroid(), k);
+
+        // for each neighbours we create an edge
+        // the weight is already computed
+        for (unsigned int i = 0; i < neighbours.size(); i++)
+        {
+            Edge *e = new Edge((*nodeIt), _nodes[neighbours[i].first->getId()], neighbours[i].second);
+
+            // adding the edge with a redundancy test
+            addEdgeWithRedundancyTest(e);
+        }
+    }
+    std::cout << "Riemannian graph has " << _edges.size() << " edges" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
