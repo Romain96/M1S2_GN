@@ -55,10 +55,12 @@ public:
     void buildEuclidianGraph(std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
     Graph *buildMinimumSpanningTree();
     void enhanceToRiemannianGraph(int k, Octree *t);
+    void traverseDepthFirstAndReorientate();
 
 private:
     // internal methods
     void __buildNodes(std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
+    std::vector<std::pair<Node *, float> > &__findChildrenOfNode(Node *n);
 };
 
 #endif // GRAPH_H

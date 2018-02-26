@@ -329,6 +329,15 @@ void Graph::enhanceToRiemannianGraph(int k, Octree *t)
     std::cout << "Riemannian graph has " << _edges.size() << " edges" << std::endl;
 }
 
+/**
+ * @brief Graph::traverseDepthFirstAndReorientate
+ */
+void Graph::traverseDepthFirstAndReorientate()
+{
+    // the objective is to traverse the MST in depth first order
+    // and propagate the "right" orientation
+}
+
 //-----------------------------------------------------------------------------
 // Internal Method(s)
 //-----------------------------------------------------------------------------
@@ -347,7 +356,6 @@ void Graph::__buildNodes(std::vector<Vertex *> &centroids, std::vector<Plane *> 
     Node *n;
     std::vector<Vertex *>::iterator centroidIterator = centroids.begin();
     std::vector<Plane *>::iterator planeIterator = planes.begin();
-    std::cout << "building nodes" << std::endl;
     _nodes.clear();
 
     while (centroidIterator != centroids.end() && planeIterator != planes.end())
@@ -360,4 +368,28 @@ void Graph::__buildNodes(std::vector<Vertex *> &centroids, std::vector<Plane *> 
     }
 
     std::cout << _nodes.size() << " nodes created" << std::endl;
+}
+
+/**
+ * @brief Graph::__findChildrenOfNode
+ * @param n Node
+ * @return a list of all Nodes and associated weights that are children of n
+ */
+std::vector<std::pair<Node *, float>>& Graph::__findChildrenOfNode(Node *n)
+{
+    static std::vector<std::pair<Node *, float>> children;
+    children.clear();
+
+    std::vector<Edge *>::iterator edgeIt;
+
+    // finding all edges from in which n is the origin
+    for (edgeIt = _edges.begin(); edgeIt != _edges.end(); edgeIt++)
+    {
+        if ((*edgeIt)->getLeftNode() == n)
+        {
+            children.push_back(std::make_pair<Node *, float>((*edgeIt)->getRightNode(), (*edgeIt)->getWeight()));
+        }
+    }
+
+    return children;
 }
