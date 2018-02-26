@@ -215,9 +215,9 @@ void Graph::buildEuclidianGraph(std::vector<Vertex *>& centroids, std::vector<Pl
         // for each centroid > referencial centroid (otherwise already treated and added an edge)
         while (nodeIterator2 != _nodes.end())
         {  
-            // compute weight between two nodes and create an edge
-            weight = 1.f - fabs(glm::dot((*nodeIterator1)->getPlane()->getEigenvector3(),
-                                         (*nodeIterator2)->getPlane()->getEigenvector3()));
+            // compute weight between two nodes and create an edge (Euclidian distance between centroids)
+            weight = Vertex::distance3((*nodeIterator1)->getCentroid()->getPosition(),
+                                       (*nodeIterator2)->getCentroid()->getPosition());
 
             e = new Edge((*nodeIterator1), (*nodeIterator2), weight);
             _edges.push_back(e);
