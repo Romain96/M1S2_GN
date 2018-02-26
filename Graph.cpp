@@ -294,6 +294,18 @@ void Graph::enhanceToRiemannianGraph(int k, Octree *t)
 
     std::vector<std::pair<Vertex *, float>> neighbours;
     std::vector<Node *>::iterator nodeIt;
+    std::vector<Edge *>::iterator edgeIt;
+
+    // first and foremost we need to change the weight in the MST
+    // since the information is not the same
+    // right now the Euclidian distance is represented
+    // but we want now a degree of closeness in term of tangent planes
+    for (edgeIt = _edges.begin(); edgeIt != _edges.end(); edgeIt++)
+    {
+        float weight = 1.f - fabs(glm::dot( (*edgeIt)->getLeftNode()->getPlane()->getEigenvector3(),
+                                      (*edgeIt)->getRightNode()->getPlane()->getEigenvector3()));
+        (*edgeIt)->setWeight(weight);
+    }
 
     // for each node we find the k nearest neighbours
     for (nodeIt = _nodes.begin(); nodeIt != _nodes.end(); nodeIt++)
@@ -306,7 +318,9 @@ void Graph::enhanceToRiemannianGraph(int k, Octree *t)
         // the weight is already computed
         for (unsigned int i = 0; i < neighbours.size(); i++)
         {
-            Edge *e = new Edge((*nodeIt), _nodes[neighbours[i].first->getId()], neighbours[i].second);
+            float weight = 1.f - fabs(glm::dot((*nodeIt)->getPlane()->getEigenvector3(),
+                                               _nodes[neighbours[i].first->getId()]->getPlane()->getEigenvector3()));
+            Edge *e = new Edge((*nodeIt), _nodes[neighbours[i].first->getId()], weight);
 
             // adding the edge with a redundancy test
             addEdgeWithRedundancyTest(e);
