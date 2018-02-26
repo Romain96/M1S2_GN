@@ -331,23 +331,30 @@ void MeshReconstructor::reorientateTangentPlanes()
     // 4) compute the Minimum Spanning Tree of this Riemannian Graph
     // 5) traverse this MST and reorient the planes based on the cost of edges
 
-    // first building an Euclidian graph
-    std::cout << "building an Euclidian graph..." << std::endl;
+    // Step 1 : Full connected graph (Euclidian distance on centroids)
+    std::cout << "building a full Euclidian connected graph..." << std::endl;
     _graph->buildEuclidianGraph(_centroids, _planes);
     std::cout << "done" << std::endl;
 
-    // then compute the MST from the graph
-    std::cout << "building MST..." << std::endl;
-    Graph *g = _graph->buildMinimumSpanningTree();
+    // Step 2 : Euclidian Minimum Spanning Tree
+    std::cout << "building Euclidian Minimum Spanning Tree..." << std::endl;
+    Graph *emst = _graph->buildMinimumSpanningTree();
     _graph->clearNodes();
     _graph->clearEdges();
-    _graph = g;
+    _graph = emst;
     std::cout << "done" << std::endl;
 
-    // then enhancing the MST with neighbours edges
-    // thus creating a Riemannian graph
-    std::cout << "building Riemannian graph" << std::endl;
+    // Step 3 : Riemannian Graph
+    std::cout << "building Riemannian graph..." << std::endl;
     _graph->enhanceToRiemannianGraph(_k, _centroidTree);
+    std::cout << "done" << std::endl;
+
+    // Step 4 : Minimum Spanning Tree
+    std::cout << "building a Minimum Spanning Tree..." << std::endl;
+    Graph *mst = _graph->buildMinimumSpanningTree();
+    _graph->clearNodes();
+    _graph->clearEdges();
+    _graph = mst;
     std::cout << "done" << std::endl;
 }
 
