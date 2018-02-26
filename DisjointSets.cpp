@@ -51,8 +51,9 @@ Node *DisjointSets::find_set(Node *u)
  * @brief DisjointSets::union_set
  * @param x node x
  * @param y node y
+ * @return id of root node
  */
-void DisjointSets::union_set(Node *x, Node *y)
+int DisjointSets::union_set(Node *x, Node *y)
 {
     /*
     Node *xroot = find_set(x);
@@ -69,5 +70,6 @@ void DisjointSets::union_set(Node *x, Node *y)
     }
     */
     parent[x->getCentroid()->getId()] = parent[y->getCentroid()->getId()];
+    return parent[y->getCentroid()->getId()]->getCentroid()->getId();
 }
 

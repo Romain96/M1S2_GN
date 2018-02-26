@@ -29,6 +29,8 @@ protected:
     std::vector<Node *> _nodes;
     // storing all edges (number unknown)
     std::vector<Edge *> _edges;
+    // root (used in MST)
+    Node *_root;
 
 public:
     // constructor(s)
@@ -39,12 +41,14 @@ public:
     Edge *getEdgeAtIndex(unsigned int i);
     std::vector<Node *>& getNodes();
     std::vector<Edge *>& getEdges();
+    Node *getRoot();
 
     // setter(s)
     void setNodeAtIndex(Node *n, unsigned int i);
     void setEdgeAtIndex(Edge *e, unsigned int i);
     void setNodes(std::vector<Node *>& nodes);
     void setEdges(std::vector<Edge *>& edges);
+    void setRoot(Node *root);
 
     // method(s)
     void addNode(Node *n);

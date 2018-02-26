@@ -27,7 +27,8 @@
  */
 Graph::Graph() :
     _nodes(),
-    _edges()
+    _edges(),
+    _root(nullptr)
 {
     // nothing
 }
@@ -80,6 +81,14 @@ std::vector<Edge *>& Graph::getEdges()
     return _edges;
 }
 
+/**
+ * @brief Graph::getRoot
+ * @return a pointer to the root Node
+ */
+Node *Graph::getRoot()
+{
+    return _root;
+}
 
 //-----------------------------------------------------------------------------
 // Setter(s)
@@ -125,6 +134,15 @@ void Graph::setNodes(std::vector<Node *> &nodes)
 void Graph::setEdges(std::vector<Edge *> &edges)
 {
     _edges = edges;
+}
+
+/**
+ * @brief Graph::setRoot
+ * @param root pointer to new root Node
+ */
+void Graph::setRoot(Node *root)
+{
+    _root = root;
 }
 
 //-----------------------------------------------------------------------------
@@ -256,6 +274,7 @@ Graph *Graph::buildMinimumSpanningTree()
 
     // creating disjoint sets
     DisjointSets ds(_nodes.size(), _nodes);
+    int rootId = 0;
 
     std::vector<Edge *>::iterator edgeIterator;
     for (edgeIterator = _edges.begin(); edgeIterator != _edges.end(); edgeIterator++)
@@ -272,10 +291,12 @@ Graph *Graph::buildMinimumSpanningTree()
             test->addEdge((*edgeIterator));
 
             // merge two sets
-            ds.union_set(uRep, vRep);
+            rootId = ds.union_set(uRep, vRep);
         }
     }
+    test->setRoot(_nodes[rootId]);
 
+    std::cout << "MST root is " << rootId << std::endl;
     std::cout << "MST has " << test->getNodes().size() << " nodes" << std::endl;
     std::cout << "MST has " << test->getEdges().size() << " edges" << std::endl;
     return test;
@@ -336,6 +357,9 @@ void Graph::traverseDepthFirstAndReorientate()
 {
     // the objective is to traverse the MST in depth first order
     // and propagate the "right" orientation
+
+    // finding the root
+    std::cout << "root will be " << getRoot()->getCentroid()->getId() << std::endl;
 }
 
 //-----------------------------------------------------------------------------

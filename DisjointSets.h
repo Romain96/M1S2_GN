@@ -24,7 +24,7 @@ struct DisjointSets
     Node *find_set(Node *u);
 
     // merge
-    void union_set(Node *x, Node *y);
+    int union_set(Node *x, Node *y);
 };
 
 #endif // DISJOINTSETS_H

@@ -356,6 +356,11 @@ void MeshReconstructor::reorientateTangentPlanes()
     _graph->clearEdges();
     _graph = mst;
     std::cout << "done" << std::endl;
+
+    // Step 5 : reorienting planes
+    std::cout << "traversing the MST and reorientating planes..." << std::endl;
+    _graph->traverseDepthFirstAndReorientate();
+    std::cout << "done" << std::endl;
 }
 
 /**
