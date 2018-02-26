@@ -321,6 +321,16 @@ void MeshReconstructor::buildCentroidTreeWithSize()
  */
 void MeshReconstructor::reorientateTangentPlanes()
 {
+    // 5 steps are necessary
+    // 1) compute a full connected graph (distance between centroids)
+    // 2) compute the Euclidian Minimum Spanning Tree of this graph
+    // 3) enrich the EMST with the "degree of closeness of tangent planes"
+    //    by remplacing the cost of present edges
+    //    and adding those of centroid neighbourhood
+    //    This is the Riemannian Graph
+    // 4) compute the Minimum Spanning Tree of this Riemannian Graph
+    // 5) traverse this MST and reorient the planes based on the cost of edges
+
     // first building an Euclidian graph
     std::cout << "building an Euclidian graph..." << std::endl;
     _graph->buildEuclidianGraph(_centroids, _planes);
