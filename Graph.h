@@ -64,7 +64,8 @@ public:
 private:
     // internal methods
     void __buildNodes(std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
-    std::vector<std::pair<Node *, float> > &__findChildrenOfNode(Node *n);
+    std::vector<Node *> &__findChildrenOfNode(Node *n);
+    void __depthFirstTraversingAndReorientation(Node *parent, Node *current);
 };
 
 #endif // GRAPH_H

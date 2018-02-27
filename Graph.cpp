@@ -358,7 +358,7 @@ void Graph::traverseDepthFirstAndReorientate()
     // the objective is to traverse the MST in depth first order
     // and propagate the "right" orientation
 
-    // finding the root
+    // starting from the root
     std::cout << "root will be " << getRoot()->getCentroid()->getId() << std::endl;
 }
 
@@ -397,11 +397,11 @@ void Graph::__buildNodes(std::vector<Vertex *> &centroids, std::vector<Plane *> 
 /**
  * @brief Graph::__findChildrenOfNode
  * @param n Node
- * @return a list of all Nodes and associated weights that are children of n
+ * @return a list of all Nodes that are children of n
  */
-std::vector<std::pair<Node *, float>>& Graph::__findChildrenOfNode(Node *n)
+std::vector<Node *>& Graph::__findChildrenOfNode(Node *n)
 {
-    static std::vector<std::pair<Node *, float>> children;
+    static std::vector<Node *> children;
     children.clear();
 
     std::vector<Edge *>::iterator edgeIt;
@@ -411,9 +411,36 @@ std::vector<std::pair<Node *, float>>& Graph::__findChildrenOfNode(Node *n)
     {
         if ((*edgeIt)->getLeftNode() == n)
         {
-            children.push_back(std::make_pair<Node *, float>((*edgeIt)->getRightNode(), (*edgeIt)->getWeight()));
+            children.push_back((*edgeIt)->getRightNode());
         }
     }
 
     return children;
+}
+
+/**
+ * @brief Graph::__depthFirstTraversingAndReorientation
+ * @param parent pointer to parent Node (caller of recursive function)
+ * @param current pointer to currently treated Node
+ */
+void Graph::__depthFirstTraversingAndReorientation(Node *parent, Node *current)
+{
+    // if Ni . Nj < 0 Nj is replaced by -Nj where
+    // * Ni is the Normal of the tangent plane associated with the Node i
+    // * Nj is the Normal of the tangent plane associated with the Node j
+    if (glm::dot(parent->getPlane()->getEigenvector3(), current->getPlane()->getEigenvector3()) < 0.f)
+    {
+        glm::vec3 normal = -current->getPlane()->getEigenvector3();
+        current->getPlane()->setEigenvector3(normal);
+    }
+
+    // retrieving each children of the current Node
+    std::vector<Node *> children = __findChildrenOfNode(current);
+    std::vector<Node *>::iterator childrenIt;
+
+    // recursively calling the function in depth first order for each children
+    for (childrenIt = children.begin(); childrenIt != children.end(); childrenIt++)
+    {
+        __depthFirstTraversingAndReorientation(current, (*childrenIt));
+    }
 }
