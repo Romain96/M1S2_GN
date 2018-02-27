@@ -66,6 +66,7 @@ private:
     void __buildNodes(std::vector<Vertex *>& centroids, std::vector<Plane *>& planes);
     std::vector<Node *> &__findChildrenOfNode(Node *n);
     void __depthFirstTraversingAndReorientation(Node *parent, Node *current);
+    void __findLargestZNormalAndRootTreeAtNode();
 };
 
 #endif // GRAPH_H

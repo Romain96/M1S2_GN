@@ -358,8 +358,12 @@ void Graph::traverseDepthFirstAndReorientate()
     // the objective is to traverse the MST in depth first order
     // and propagate the "right" orientation
 
-    // starting from the root
-    std::cout << "root will be " << getRoot()->getCentroid()->getId() << std::endl;
+    // initializing orientation for largest Z component plane
+    // and rooting the tree at this node
+    __findLargestZNormalAndRootTreeAtNode();
+
+    // initial recursive call
+    __depthFirstTraversingAndReorientation(_root, _root);
 }
 
 //-----------------------------------------------------------------------------
@@ -425,6 +429,7 @@ std::vector<Node *>& Graph::__findChildrenOfNode(Node *n)
  */
 void Graph::__depthFirstTraversingAndReorientation(Node *parent, Node *current)
 {
+    std::cerr << "__dftar " << parent->getCentroid()->getId() << ", " << current->getCentroid()->getId() << std::endl;
     // if Ni . Nj < 0 Nj is replaced by -Nj where
     // * Ni is the Normal of the tangent plane associated with the Node i
     // * Nj is the Normal of the tangent plane associated with the Node j
@@ -443,4 +448,64 @@ void Graph::__depthFirstTraversingAndReorientation(Node *parent, Node *current)
     {
         __depthFirstTraversingAndReorientation(current, (*childrenIt));
     }
+}
+
+/**
+ * @brief Graph::__findLargestZNormalAndRootTreeAtNode
+ */
+void Graph::__findLargestZNormalAndRootTreeAtNode()
+{
+    // first we find the plane who has the largest z component normal (eigenvector 3)
+    // let's call it maxZ
+    std::vector<Node *>::iterator nodeIt;
+    Node *maxZ = nullptr;
+    float maxZValue = 0.f;  // as absolute value !
+
+    for (nodeIt = _nodes.begin(); nodeIt != _nodes.end(); nodeIt++)
+    {
+        if (fabs((*nodeIt)->getPlane()->getEigenvector3().z) > maxZValue)
+        {
+            maxZ = (*nodeIt);
+            maxZValue = fabs((*nodeIt)->getPlane()->getEigenvector3().z);
+        }
+    }
+
+    std::cout << "largest Z is node " << maxZ->getCentroid()->getId() << std::endl;
+
+    // if z is pointing towards -Z then we make it pointing towards +Z
+    if (maxZ->getPlane()->getEigenvector3().z < 0.f)
+    {
+        glm::vec3 normal = maxZ->getPlane()->getEigenvector3();
+        normal.z = -normal.z;
+        maxZ->getPlane()->setEigenvector3(normal);
+    }
+
+    // if maxZ plane has a parent in the MST
+    // we delete the edge parent-maxZ
+    // we root the tree at maxZ by creating the edge maxZ-root
+    // where root is the current root of the MST
+    std::vector<Edge *>::iterator edgeIt;
+
+    for (edgeIt = _edges.begin(); edgeIt != _edges.end(); edgeIt++)
+    {
+        if( (*edgeIt)->getRightNode() == maxZ)
+        {
+            std::cerr << "swaping " << (*edgeIt)->getLeftNode()->getCentroid()->getId()
+                      << " and " << _root->getCentroid()->getId() << std::endl;
+            // rooting at maxZ
+            float weight = 1.f - fabs(glm::dot(maxZ->getPlane()->getEigenvector3(),
+                                      (*edgeIt)->getLeftNode()->getPlane()->getEigenvector3()));
+            Edge *e = new Edge(maxZ, (*edgeIt)->getLeftNode(), weight);
+            addEdge(e);
+
+            // removing parent-maxZ edge
+            _edges.erase(edgeIt);
+
+            // updating the root
+            setRoot(maxZ);
+            break;
+        }
+    }
+
+    std::cout << "root is now " << _root->getCentroid()->getId() << std::endl;
 }
