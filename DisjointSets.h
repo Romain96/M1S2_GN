@@ -12,10 +12,10 @@
 
 struct DisjointSets
 {
-    // list of all parents
-    Node **parent;
+    // list of all parents and their respective ranks
+    std::vector<std::pair<Node *, int>> _element;
     // number of nodes in graph
-    int n;
+    int n;    
 
     // constructor
     DisjointSets(int n, std::vector<Node *>& nodes);

@@ -19,13 +19,12 @@
 DisjointSets::DisjointSets(int n, std::vector<Node *> &nodes)
 {
     this->n = n;
-    parent = new Node *[n - 1];
-
     // initially all vertices are in
     // different sets and have a rank of 0
     for (int i = 0; i < n; i++)
     {
-        parent[i] = nodes[i];
+        std::pair<Node *, int> p(nodes[i], 0);
+        _element.push_back(p);
     }
 }
 
@@ -36,10 +35,10 @@ DisjointSets::DisjointSets(int n, std::vector<Node *> &nodes)
  */
 Node *DisjointSets::find_set(Node *u)
 {
-    if (u == parent[u->getCentroid()->getId()])
-        return parent[u->getCentroid()->getId()];
+    if (u == _element[u->getCentroid()->getId()].first)
+        return u;
     else
-        return find_set(parent[u->getCentroid()->getId()]);
+        return find_set(_element[u->getCentroid()->getId()].first);
 
     /*
     if (u != parent[u->getCentroid()->getId()])
@@ -55,21 +54,31 @@ Node *DisjointSets::find_set(Node *u)
  */
 int DisjointSets::union_set(Node *x, Node *y)
 {
-    /*
-    Node *xroot = find_set(x);
-    Node *yroot = find_set(y);
+    Node *xRep = find_set(x);
+    Node *yRep = find_set(y);
 
-    if (rnk[xroot->getCentroid()->getId()] < rnk[yroot->getCentroid()->getId()])
-        parent[xroot->getCentroid()->getId()] = yroot;
-    else if (rnk[xroot->getCentroid()->getId()] > rnk[yroot->getCentroid()->getId()])
-        parent[yroot->getCentroid()->getId()] = xroot;
-    else    // rank of x == rank of y
+    if (xRep != yRep)
     {
-        parent[yroot->getCentroid()->getId()] = xroot;
-        rnk[xroot->getCentroid()->getId()]++;
+        // rank of x > rank of y
+        if (_element[xRep->getCentroid()->getId()].second > _element[yRep->getCentroid()->getId()].second)
+        {
+            _element[yRep->getCentroid()->getId()].first = _element[xRep->getCentroid()->getId()].first;
+            return xRep->getCentroid()->getId();
+        }
+        // rank of x < rank of y
+        else if (_element[xRep->getCentroid()->getId()].second <_element[yRep->getCentroid()->getId()].second)
+        {
+            _element[xRep->getCentroid()->getId()].first = _element[yRep->getCentroid()->getId()].first;
+            return yRep->getCentroid()->getId();
+        }
+        // rank x == rank y
+        else
+        {
+            // rooting in x, increaing rank of x
+            _element[yRep->getCentroid()->getId()].first = _element[xRep->getCentroid()->getId()].first;
+            _element[xRep->getCentroid()->getId()].second += 1;
+            return xRep->getCentroid()->getId();
+        }
     }
-    */
-    parent[x->getCentroid()->getId()] = parent[y->getCentroid()->getId()];
-    return parent[y->getCentroid()->getId()]->getCentroid()->getId();
 }
 

@@ -291,7 +291,9 @@ Graph *Graph::buildMinimumSpanningTree()
             test->addEdge((*edgeIterator));
 
             // merge two sets
-            rootId = ds.union_set(uRep, vRep);
+            int id = ds.union_set(uRep, vRep);
+            if (ds._element[id].second > ds._element[rootId].second)
+                rootId = id;
         }
     }
     test->setRoot(_nodes[rootId]);
