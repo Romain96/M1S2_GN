@@ -445,6 +445,8 @@ void Graph::__depthFirstTraversingAndReorientation(Node *parent, Node *current)
     std::vector<Node *> children = __findChildrenOfNode(current);
     std::vector<Node *>::iterator childrenIt;
 
+    std::cout << children.size() << " children" << std::endl;
+
     // recursively calling the function in depth first order for each children
     for (childrenIt = children.begin(); childrenIt != children.end(); childrenIt++)
     {
@@ -492,19 +494,17 @@ void Graph::__findLargestZNormalAndRootTreeAtNode()
     {
         if( (*edgeIt)->getRightNode() == maxZ)
         {
-            std::cerr << "swaping " << (*edgeIt)->getLeftNode()->getCentroid()->getId()
+            std::cerr << "swaping " << maxZ->getCentroid()->getId()
                       << " and " << _root->getCentroid()->getId() << std::endl;
             // rooting at maxZ
             float weight = 1.f - fabs(glm::dot(maxZ->getPlane()->getEigenvector3(),
-                                      (*edgeIt)->getLeftNode()->getPlane()->getEigenvector3()));
-            Edge *e = new Edge(maxZ, (*edgeIt)->getLeftNode(), weight);
+                                      _root->getPlane()->getEigenvector3()));
+            Edge *e = new Edge(maxZ, _root, weight);
             addEdge(e);
+            setRoot(maxZ);
 
             // removing parent-maxZ edge
             _edges.erase(edgeIt);
-
-            // updating the root
-            setRoot(maxZ);
             break;
         }
     }
