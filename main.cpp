@@ -21,7 +21,7 @@ int main()
 {
     Mesh m;
 
-    // testing on a hand made cube
+    // loading the point cloud (loading only vertices of mesh)
     m.importOFF("../OFF/block.off");
 
     // MeshReconstructor test
@@ -29,6 +29,9 @@ int main()
     // parameters : k = 10, Octree built with 2 iterations (64 leaves)
     mr.setK(10);
     mr.setIterations(2);
+    // parameters : 0-dense, 0.05-noisy
+    mr.setDense(0.f);
+    mr.setNoisy(0.5f);
     mr.buildPointTreeWithIterations();
     mr.computeCentroidsAndTangentPlanes();
     mr.buildCentroidTreeWithIterations();

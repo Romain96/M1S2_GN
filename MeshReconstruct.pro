@@ -38,4 +38,5 @@ HEADERS += \
     Node.h \
     Edge.h \
     Graph.h \
-    DisjointSets.h
+    DisjointSets.h \
+    Cube.h
