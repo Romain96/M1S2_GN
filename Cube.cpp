@@ -26,20 +26,14 @@
  */
 Cube::Cube()
 {
-    // creating the array of positions
-    _positions = new glm::vec3[8];
-
-    // filling with (0,0,0)
+    // filling the array of positions with (0,0,0)
     glm::vec3 pos(0.f, 0.f, 0.f);
     for (unsigned int i = 0; i < 8; i++)
         _positions[i] = pos;
 
-    // creating the array of values
-    _values = new float[8];
-
-    // filling with "undefined" (infinity)
+    // filling the array of values/signs with "undefined" (infinity)
     for (unsigned int i = 0; i < 8; i++)
-        _positions[i] = std::numeric_limits<float>::infinity();
+        _values[i] = std::numeric_limits<float>::infinity();
 }
 
 /**
@@ -54,12 +48,9 @@ Cube::Cube()
  * @param usw upper south west position
  */
 Cube::Cube(glm::vec3 &lnw, glm::vec3 &lne, glm::vec3 &lse, glm::vec3 &lsw,
-           glm::vec3 &unw, glm::vec3 &une, glm::vec3 &use, glm::vec3 &usw) :
+           glm::vec3 &unw, glm::vec3 &une, glm::vec3 &use, glm::vec3 &usw)
 {
-    // creating the array of positions
-    _positions = new glm::vec3[8];
-
-    // filling with values
+    // filling the array of positions with values
     _positions[0] = lnw;
     _positions[1] = lne;
     _positions[2] = lse;
@@ -70,12 +61,9 @@ Cube::Cube(glm::vec3 &lnw, glm::vec3 &lne, glm::vec3 &lse, glm::vec3 &lsw,
     _positions[6] = use;
     _positions[7] = usw;
 
-    // creating the array of values
-    _values = new float[8];
-
-    // filling with "undefined" (infinity)
+    // filling the array of values/signs with "undefined" (infinity)
     for (unsigned int i = 0; i < 8; i++)
-        _positions[i] = std::numeric_limits<float>::infinity();
+        _values[i] = std::numeric_limits<float>::infinity();
 }
 
 //-----------------------------------------------------------------------------
