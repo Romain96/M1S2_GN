@@ -495,7 +495,7 @@ float MeshReconstructor::__signedDistanceToClosestTangentPlane(Vertex *p)
     // else we set the distance as undefined using infinity to represent "undefined" state
     float dist = Vertex::distance3(z, centroid->getPosition());
     if (dist < _p + _d)
-        return dist;
+        return glm::dot((p->getPosition() - centroid->getPosition()), tp->getEigenvector3());
     else
         return std::numeric_limits<float>::infinity();
 }
