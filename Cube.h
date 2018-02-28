@@ -70,15 +70,15 @@ public:
     void setUSWPos(glm::vec3& usw);
 
     // for values/signs
-    void setLNWPos(float lnw);
-    void setLNEPos(float lne);
-    void setLSEPos(float lse);
-    void setLSWPos(float lsw);
+    void setLNWVal(float lnw);
+    void setLNEVal(float lne);
+    void setLSEVal(float lse);
+    void setLSWVal(float lsw);
 
-    void setUNWPos(float unw);
-    void setUNEPos(float une);
-    void setUSEPos(float use);
-    void setUSWPos(float usw);
+    void setUNWVal(float unw);
+    void setUNEVal(float une);
+    void setUSEVal(float use);
+    void setUSWVal(float usw);
 
     // method(s)
 
