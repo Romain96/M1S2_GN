@@ -7,6 +7,7 @@
 
 #include <set>
 #include <iostream>
+#include <limits>
 
 #include "MeshReconstructor.h"
 
@@ -35,7 +36,9 @@ MeshReconstructor::MeshReconstructor(std::vector<Vertex *> &vertices) :
     _k(10),
     _iterations(2),
     _size(0.5f),
-    _points(vertices)
+    _points(vertices),
+    _p(0.f),
+    _d(0.f)
 {
     // nothing
 }
@@ -69,6 +72,24 @@ int MeshReconstructor::getIterations()
 float MeshReconstructor::getSize()
 {
     return _size;
+}
+
+/**
+ * @brief MeshReconstructor::getDense
+ * @return the coefficient of density
+ */
+float MeshReconstructor::getDense()
+{
+    return _d;
+}
+
+/**
+ * @brief MeshReconstructor::getNoisy
+ * @return the coefficient of noise
+ */
+float MeshReconstructor::getNoisy()
+{
+    return _d;
 }
 
 /**
@@ -145,6 +166,24 @@ void MeshReconstructor::setIterations(int it)
 void MeshReconstructor::setSize(float size)
 {
     _size = size;
+}
+
+/**
+ * @brief MeshReconstructor::setDense
+ * @param p new codfficient of density
+ */
+void MeshReconstructor::setDense(float p)
+{
+    _p = p;
+}
+
+/**
+ * @brief MeshReconstructor::setNoisy
+ * @param d new coefficient of noise
+ */
+void MeshReconstructor::setNoisy(float d)
+{
+    _d = d;
 }
 
 /**
@@ -445,9 +484,18 @@ float MeshReconstructor::__signedDistanceToClosestTangentPlane(Vertex *p)
 {
     // retrieving the closest tangent plane with __findNearestPlane
     Vertex *centroid = __findNearestTangentPlaneAsCentroid(p);
+    // and its associated tangent plane
+    Plane *tp = _planes[centroid->getId()];
 
-    // returning (p - oi) . ni where
-    // - oi is the center of the closest tangent plane
-    // - ni is the normal associated to this nearest tangent plane (eigenvector3)
-    return glm::dot((p->getPosition() - centroid->getPosition()), _planes[centroid->getId()]->getEigenvector3());
+    // computing z the projection of p into it's closest tangent plane
+    // z <- oi - (((p - oi).ni) * ni)
+    glm::vec3 z = centroid->getPosition() - ((glm::dot((p->getPosition() - centroid->getPosition()), tp->getEigenvector3())) * tp->getEigenvector3());
+
+    // if distance between z and oi is less than p + d we return the distance
+    // else we set the distance as undefined using infinity to represent "undefined" state
+    float dist = Vertex::distance3(z, centroid->getPosition());
+    if (dist < _p + _d)
+        return dist;
+    else
+        return std::numeric_limits<float>::infinity();
 }

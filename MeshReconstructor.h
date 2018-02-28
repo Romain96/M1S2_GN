@@ -33,9 +33,16 @@ using namespace Eigen;
 class MeshReconstructor
 {
 private:
+    // k neighbourhood
     int _k;
+    // number of iterations to create the Octree
     int _iterations;
+    // minimum size to reach when creating the Octree
     float _size;
+    // surface is supposed to be p-dense
+    float _p;
+    // surface is supposed to be d-noisy
+    float _d;
 
 protected:
     // list of all vertices (point cloud)
@@ -61,6 +68,8 @@ public:
     int getK();
     int getIterations();
     float getSize();
+    float getDense();
+    float getNoisy();
     Octree *getPointTree();
     Octree *getCentroidTree();
     std::vector<Vertex *>& getCentroids();
@@ -71,6 +80,8 @@ public:
     void setK(int k);
     void setIterations(int it);
     void setSize(float size);
+    void setDense(float p);
+    void setNoisy(float d);
     void setPointTree(Octree *t);
     void setCentroidTree(Octree *t);
     void setCentroids(std::vector<Vertex *>& centroids);
