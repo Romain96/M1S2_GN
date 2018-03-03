@@ -7,11 +7,13 @@
 
 #include <set>
 #include <iostream>
+#include <limits>
 
 #include "MeshReconstructor.h"
 
 #include "Octree.h"
 #include "Plane.h"
+#include "Graph.h"
 
 // Eigen
 #include "Eigen/Dense"
@@ -31,7 +33,12 @@ using namespace Eigen;
  * @param vertices point cloud
  */
 MeshReconstructor::MeshReconstructor(std::vector<Vertex *> &vertices) :
-    _points(vertices)
+    _k(10),
+    _iterations(2),
+    _size(0.5f),
+    _points(vertices),
+    _p(0.f),
+    _d(0.f)
 {
     // nothing
 }
@@ -47,6 +54,42 @@ MeshReconstructor::MeshReconstructor(std::vector<Vertex *> &vertices) :
 int MeshReconstructor::getK()
 {
     return _k;
+}
+
+/**
+ * @brief MeshReconstructor::getIterations
+ * @return the number of iterations used to build the Octrees
+ */
+int MeshReconstructor::getIterations()
+{
+    return _iterations;
+}
+
+/**
+ * @brief MeshReconstructor::getSize
+ * @return the min size used to build the Octrees
+ */
+float MeshReconstructor::getSize()
+{
+    return _size;
+}
+
+/**
+ * @brief MeshReconstructor::getDense
+ * @return the coefficient of density
+ */
+float MeshReconstructor::getDense()
+{
+    return _d;
+}
+
+/**
+ * @brief MeshReconstructor::getNoisy
+ * @return the coefficient of noise
+ */
+float MeshReconstructor::getNoisy()
+{
+    return _d;
 }
 
 /**
@@ -108,6 +151,42 @@ void MeshReconstructor::setK(int k)
 }
 
 /**
+ * @brief MeshReconstructor::setIterations
+ * @param it number of iterations too build the Octrees
+ */
+void MeshReconstructor::setIterations(int it)
+{
+    _iterations = it;
+}
+
+/**
+ * @brief MeshReconstructor::setSize
+ * @param size min size to reach when building the Octrees
+ */
+void MeshReconstructor::setSize(float size)
+{
+    _size = size;
+}
+
+/**
+ * @brief MeshReconstructor::setDense
+ * @param p new codfficient of density
+ */
+void MeshReconstructor::setDense(float p)
+{
+    _p = p;
+}
+
+/**
+ * @brief MeshReconstructor::setNoisy
+ * @param d new coefficient of noise
+ */
+void MeshReconstructor::setNoisy(float d)
+{
+    _d = d;
+}
+
+/**
  * @brief MeshReconstructor::setPointTree
  * @param t new Octree based on the point cloud
  */
@@ -159,11 +238,21 @@ void MeshReconstructor::setComputedMesh(Mesh &m)
 /**
  * @brief MeshReconstructor::buildPointTree
  */
-void MeshReconstructor::buildPointTree()
+void MeshReconstructor::buildPointTreeWithIterations()
 {
     _pointTree = new Octree();
     _pointTree->findSpaceBorders(_points);
-    _pointTree->constructWithIterations(_k, _points);
+    _pointTree->constructWithIterations(_iterations, _points);
+}
+
+/**
+ * @brief MeshReconstructor::buildPointTreeWithSize
+ */
+void MeshReconstructor::buildPointTreeWithSize()
+{
+    _pointTree = new Octree();
+    _pointTree->findSpaceBorders(_points);
+    _pointTree->constructWithMinSize(_size, _points);
 }
 
 /**
@@ -198,8 +287,9 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes()
         }
 
         // storing the centroid in _centroids
-        centroid = (1.f / neighbours.size()) * centroid;
+        centroid = centroid / (float)_k;
         _centroids.push_back(new Vertex(id++, centroid.x, centroid.y, centroid.z));
+        //std::cout << "point : " << (*pointIterator)->getPosition().x << ", " << (*pointIterator)->getPosition().y << ", " << (*pointIterator)->getPosition().z << std::endl;
         //std::cout << "centroid : " << centroid.x << ", " << centroid.y << ", " << centroid.z << std::endl;
 
         // computing the covariance matrix
@@ -246,20 +336,166 @@ void MeshReconstructor::computeCentroidsAndTangentPlanes()
 }
 
 /**
- * @brief MeshReconstructor::buildCentroidTree
+ * @brief MeshReconstructor::buildCentroidTreeWithIterations
  */
-void MeshReconstructor::buildCentroidTree()
+void MeshReconstructor::buildCentroidTreeWithIterations()
 {
     _centroidTree = new Octree();
     _centroidTree->findSpaceBorders(_centroids);
-    _centroidTree->constructWithIterations(_k, _centroids);
+    _centroidTree->constructWithIterations(_iterations, _centroids);
 }
 
 /**
- * @brief MeshReconstructor::buildGraph
+ * @brief MeshReconstructor::buildCentroidTreeWithSize
  */
-void MeshReconstructor::buildGraph()
+void MeshReconstructor::buildCentroidTreeWithSize()
 {
-    g = Graph();
-    g.buildGraph(_k, _centroidTree, _centroids, _planes);
+    _centroidTree = new Octree();
+    _centroidTree->findSpaceBorders(_centroids);
+    _centroidTree->constructWithMinSize(_size, _centroids);
+}
+
+/**
+ * @brief MeshReconstructor::reorientateTangentPlanes
+ */
+void MeshReconstructor::reorientateTangentPlanes()
+{
+    // 5 steps are necessary
+    // 1) compute a full connected graph (distance between centroids)
+    // 2) compute the Euclidian Minimum Spanning Tree of this graph
+    // 3) enrich the EMST with the "degree of closeness of tangent planes"
+    //    by remplacing the cost of present edges
+    //    and adding those of centroid neighbourhood
+    //    This is the Riemannian Graph
+    // 4) compute the Minimum Spanning Tree of this Riemannian Graph
+    // 5) traverse this MST and reorient the planes based on the cost of edges
+
+    // Step 1 : Full connected graph (Euclidian distance on centroids)
+    std::cout << "building a full Euclidian connected graph..." << std::endl;
+    _graph->buildEuclidianGraph(_centroids, _planes);
+    std::cout << "done" << std::endl;
+
+    // Step 2 : Euclidian Minimum Spanning Tree
+    std::cout << "building Euclidian Minimum Spanning Tree..." << std::endl;
+    Graph *emst = _graph->buildMinimumSpanningTree();
+    _graph->clearNodes();
+    _graph->clearEdges();
+    _graph = emst;
+    std::cout << "done" << std::endl;
+
+    // Step 3 : Riemannian Graph
+    std::cout << "building Riemannian graph..." << std::endl;
+    _graph->enhanceToRiemannianGraph(_k, _centroidTree);
+    std::cout << "done" << std::endl;
+
+    // Step 4 : Minimum Spanning Tree
+    std::cout << "building a Minimum Spanning Tree..." << std::endl;
+    Graph *mst = _graph->buildMinimumSpanningTree();
+    _graph->clearNodes();
+    _graph->clearEdges();
+    _graph = mst;
+    std::cout << "done" << std::endl;
+
+    // Step 5 : reorienting planes
+    std::cout << "traversing the MST and reorientating planes..." << std::endl;
+    _graph->traverseDepthFirstAndReorientate();
+    std::cout << "done" << std::endl;
+}
+
+/**
+ * @brief MeshReconstructor::__findNearestTangentPlaneAsCentroid
+ * @param p point of reference
+ * @return a pointer to the closest tangent plane from p
+ */
+Vertex *MeshReconstructor::__findNearestTangentPlaneAsCentroid(Vertex *p)
+{
+    // we consider that the closest tangent plane from p is the tangent plane
+    // whom associated centroid is the closest to p
+    // thus using the centroid octree to quicken the search
+
+    // first searching in which leaf of the centroid octree is p
+    Octree *t = _centroidTree;
+    while (!t->leaf())
+    {
+        if (Octree::isInside(p, t->getLowerNE()))
+        {
+            t = t->getLowerNE();
+        }
+        else if (Octree::isInside(p, t->getLowerNW()))
+        {
+            t = t->getLowerNW();
+        }
+        else if (Octree::isInside(p, t->getLowerSE()))
+        {
+            t = t->getLowerSE();
+        }
+        else if (Octree::isInside(p, t->getLowerSW()))
+        {
+            t = t->getLowerSW();
+        }
+        else if (Octree::isInside(p, t->getUpperNE()))
+        {
+            t = t->getUpperNE();
+        }
+        else if (Octree::isInside(p, t->getUpperNW()))
+        {
+            t = t->getUpperNW();
+        }
+        else if (Octree::isInside(p, t->getUpperSE()))
+        {
+            t = t->getUpperSE();
+        }
+        else if (Octree::isInside(p, t->getUpperSW()))
+        {
+            t = t->getUpperSW();
+        }
+        else
+        {
+            std::cerr << "MeshReconstructor::__findNearestPlane error point is not inside one of the 8 children !" << std::endl;
+            break;
+        }
+    }
+
+    // finding the closest centroid in this leaf
+    float dist;
+    float distMin = 10000.f;
+    Vertex *closestCentroid;
+    std::vector<Vertex *>::iterator it;
+
+    for (it = t->getPoints().begin(); it != t->getPoints().end(); it++)
+    {
+        dist = Vertex::distance3(p->getPosition(), (*it)->getPosition());
+        if (dist < distMin)
+        {
+            distMin = dist;
+            closestCentroid = (*it);
+        }
+    }
+
+    return closestCentroid;
+}
+
+/**
+ * @brief MeshReconstructor::__signedDistanceToClosestTangentPlane
+ * @param p point of reference
+ * @return the signed distance to the closest tangent plane from p
+ */
+float MeshReconstructor::__signedDistanceToClosestTangentPlane(Vertex *p)
+{
+    // retrieving the closest tangent plane with __findNearestPlane
+    Vertex *centroid = __findNearestTangentPlaneAsCentroid(p);
+    // and its associated tangent plane
+    Plane *tp = _planes[centroid->getId()];
+
+    // computing z the projection of p into it's closest tangent plane
+    // z <- oi - (((p - oi).ni) * ni)
+    glm::vec3 z = centroid->getPosition() - ((glm::dot((p->getPosition() - centroid->getPosition()), tp->getEigenvector3())) * tp->getEigenvector3());
+
+    // if distance between z and oi is less than p + d we return the distance
+    // else we set the distance as undefined using infinity to represent "undefined" state
+    float dist = Vertex::distance3(z, centroid->getPosition());
+    if (dist < _p + _d)
+        return glm::dot((p->getPosition() - centroid->getPosition()), tp->getEigenvector3());
+    else
+        return std::numeric_limits<float>::infinity();
 }

@@ -24,7 +24,9 @@ SOURCES += main.cpp \
     Plane.cpp \
     Node.cpp \
     Edge.cpp \
-    Graph.cpp
+    Graph.cpp \
+    DisjointSets.cpp \
+    Cube.cpp
 
 HEADERS += \
     Vertex.h \
@@ -36,4 +38,6 @@ HEADERS += \
     Plane.h \
     Node.h \
     Edge.h \
-    Graph.h
+    Graph.h \
+    DisjointSets.h \
+    Cube.h

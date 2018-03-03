@@ -33,7 +33,16 @@ using namespace Eigen;
 class MeshReconstructor
 {
 private:
+    // k neighbourhood
     int _k;
+    // number of iterations to create the Octree
+    int _iterations;
+    // minimum size to reach when creating the Octree
+    float _size;
+    // surface is supposed to be p-dense
+    float _p;
+    // surface is supposed to be d-noisy
+    float _d;
 
 protected:
     // list of all vertices (point cloud)
@@ -47,7 +56,7 @@ protected:
     // list of all computed tangent planes with their associated normal
     std::vector<Plane *> _planes;
     // Graph used to reorientate the tangent planes
-    Graph g;
+    Graph *_graph;
     // computed Mesh
     Mesh _result;
 
@@ -57,6 +66,10 @@ public:
 
     // getter(s)
     int getK();
+    int getIterations();
+    float getSize();
+    float getDense();
+    float getNoisy();
     Octree *getPointTree();
     Octree *getCentroidTree();
     std::vector<Vertex *>& getCentroids();
@@ -65,6 +78,10 @@ public:
 
     // setter(s)
     void setK(int k);
+    void setIterations(int it);
+    void setSize(float size);
+    void setDense(float p);
+    void setNoisy(float d);
     void setPointTree(Octree *t);
     void setCentroidTree(Octree *t);
     void setCentroids(std::vector<Vertex *>& centroids);
@@ -72,14 +89,15 @@ public:
     void setComputedMesh(Mesh& m);
 
     // method(s)
-    void buildPointTree();
+    void buildPointTreeWithIterations();
+    void buildPointTreeWithSize();
     void computeCentroidsAndTangentPlanes();
-    void buildCentroidTree();
-    void buildGraph();
+    void buildCentroidTreeWithIterations();
+    void buildCentroidTreeWithSize();
     void reorientateTangentPlanes();
 
-private:
-    void __buildCentroidOctree(std::vector<glm::vec3>& centroids);
+    Vertex *__findNearestTangentPlaneAsCentroid(Vertex *p);
+    float __signedDistanceToClosestTangentPlane(Vertex *p);
 };
 
 #endif // MESHRECONSTRUCTOR_H
