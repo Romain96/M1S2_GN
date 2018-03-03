@@ -8,6 +8,9 @@
  * 2018-2019
  */
 
+// STD
+#include <cmath>
+
 #include "Vertex.h"
 
 // triangle structure used to represent a triangle (by representing 3 Vertices)
@@ -29,21 +32,25 @@ typedef struct s_gridcell
 class MarchingCubes
 {
 protected:
-    unsigned float _subdivisionFactor;
+    float _subdivisionFactor;
     double _isolevel;
 
 public:
     // constructor(s)
+    MarchingCubes();
+    MarchingCubes(float factor, double isolevel);
 
     // getter(s)
-    unsigned float getSubdivisionFactor();
+    float getSubdivisionFactor();
+    double getIsolevel();
 
     // settet(s)
-    void setSubdivisionFactor(unsigned float factor);
+    void setSubdivisionFactor(float factor);
+    void setIsolevel(double isolevel);
 
     // method(s)
-    int polygonise(GRIDCELL grid, double isolevel, TRIANGLE *triangles);
-    Vertex vertexInterpolate(double isolevel, Vertex p1, Vertex p2, double valp1, double valp2);
+    int polygonise(GRIDCELL grid, TRIANGLE *triangles);
+    Vertex vertexInterpolate(Vertex p1, Vertex p2, double valp1, double valp2);
 };
 
 #endif // MARCHINGCUBES_H

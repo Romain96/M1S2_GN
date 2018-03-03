@@ -27,6 +27,18 @@
 //-----------------------------------------------------------------------------
 
 /**
+ * @brief Vertex::Vertex unparametrized default constructor
+ */
+Vertex::Vertex() :
+    _id(0),
+    _position(0.f, 0.f, 0.f),
+    _incidentHE(nullptr),
+    _colour(0.f)
+{
+    // nothing
+}
+
+/**
  * @brief Vertex::Vertex constructs a new Vertex without an incident Half Edge
  * @param id unique id to identify the Vertex
  * @param x coordinate in the x axis

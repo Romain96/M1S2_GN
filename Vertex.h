@@ -37,6 +37,7 @@ protected:
 
 public:
     // constructor
+    Vertex();
     Vertex(int id, float x, float y, float z);
     Vertex(int id, float x, float y, float z, HalfEdge *incidentHE);
 
