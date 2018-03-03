@@ -40,4 +40,5 @@ HEADERS += \
     Edge.h \
     Graph.h \
     DisjointSets.h \
-    Cube.h
+    Cube.h \
+    MarchingCubes.h
