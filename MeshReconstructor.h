@@ -121,7 +121,7 @@ public:
     // marching cubes
     int polygonise(GRIDCELL grid, TRIANGLE *triangles);
     Vertex vertexInterpolate(Vertex p1, Vertex p2, double valp1, double valp2);
-    void createIsosurface(Vertex lowerEnglobingVertex, Vertex upperEnglobingVertex);
+    void createIsosurface();
 
 
     Vertex *__findNearestTangentPlaneAsCentroid(Vertex *p);

@@ -942,10 +942,8 @@ Vertex MeshReconstructor::vertexInterpolate(Vertex p1, Vertex p2, double valp1, 
 
 /**
  * @brief MeshReconstructor::createIsosurface
- * @param lowerEnglobingVertex
- * @param upperEnglobingVertex
  */
-void MeshReconstructor::createIsosurface(Vertex lowerEnglobingVertex, Vertex upperEnglobingVertex)
+void MeshReconstructor::createIsosurface()
 {
     // convention of vertex index used is the following  :
     // 0 : lower south east vertex
@@ -957,20 +955,25 @@ void MeshReconstructor::createIsosurface(Vertex lowerEnglobingVertex, Vertex upp
     // 6 : upper north west vertex
     // 7 : upper south west vertex
 
+    glm::vec3 lowerEnglobingVertex = _centroidTree->getBorderLowerSW();
+    glm::vec3 upperEnglobingVertex = _centroidTree->getBorderUpperNE();
+
+    std::cout << "Marching cubes algorithm..." << std::endl;
+
     GRIDCELL cell;
-    float minX = lowerEnglobingVertex.getX();
-    float minY = lowerEnglobingVertex.getY();
-    float minZ = lowerEnglobingVertex.getZ();
-    float maxX = lowerEnglobingVertex.getX() + _subdivisionFactor;
-    float maxY = lowerEnglobingVertex.getY() + _subdivisionFactor;
-    float maxZ = lowerEnglobingVertex.getZ() + _subdivisionFactor;
+    float minX = lowerEnglobingVertex.x;
+    float minY = lowerEnglobingVertex.y;
+    float minZ = lowerEnglobingVertex.z;
+    float maxX = lowerEnglobingVertex.x + _subdivisionFactor;
+    float maxY = lowerEnglobingVertex.y + _subdivisionFactor;
+    float maxZ = lowerEnglobingVertex.z + _subdivisionFactor;
 
     // for each cube in the surface englobing cube
-    for (float x = lowerEnglobingVertex.getX() + _subdivisionFactor; x < upperEnglobingVertex.getX(); x += _subdivisionFactor)
+    for (float x = lowerEnglobingVertex.x + _subdivisionFactor; x < upperEnglobingVertex.x; x += _subdivisionFactor)
     {
-        for (float y = lowerEnglobingVertex.getY() + _subdivisionFactor; y < upperEnglobingVertex.getY(); y += _subdivisionFactor)
+        for (float y = lowerEnglobingVertex.y + _subdivisionFactor; y < upperEnglobingVertex.y; y += _subdivisionFactor)
         {
-            for (float z = lowerEnglobingVertex.getZ() + _subdivisionFactor; z < upperEnglobingVertex.getZ(); z += _subdivisionFactor)
+            for (float z = lowerEnglobingVertex.z + _subdivisionFactor; z < upperEnglobingVertex.z; z += _subdivisionFactor)
             {
                 // vertices
                 Vertex *v0 = new Vertex(0, minX, maxY, minZ);
@@ -1001,6 +1004,10 @@ void MeshReconstructor::createIsosurface(Vertex lowerEnglobingVertex, Vertex upp
                 cell.val[5] = MeshReconstructor::__signedDistanceToClosestTangentPlane(v5);
                 cell.val[6] = MeshReconstructor::__signedDistanceToClosestTangentPlane(v6);
                 cell.val[7] = MeshReconstructor::__signedDistanceToClosestTangentPlane(v7);
+
+                TRIANGLE res[5];
+                int n = polygonise(cell, res);
+                std::cout << n << " triangles created" << std::endl;
 
                 // next cube position
                 minX += _subdivisionFactor;
