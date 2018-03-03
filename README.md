@@ -1,22 +1,13 @@
 # Projet de géométrie numérique
 
-* GITHUB DESKTOP : https://desktop.github.com/
-
-* Kruskal algorithm
-https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-using-stl-in-c/
-
-* Marching Cubes
-* https://graphics.stanford.edu/~mdfisher/MarchingCubes.html 
-* http://paulbourke.net/geometry/polygonise/
-
 ## Description
 
 Projet réalisé dans le cadre de l'UE "Géométrie Numérique"
 * Auteurs: 
-    * Romain PERRIN 
-    * Maxime SEYER
+    * Romain PERRIN (romain.perrin@etu.unistra.fr)
+    * Maxime SEYER (maxime.seyer@etu.unistra.fr)
 * Encadrement: Franck Hétroy-Wheeler
-* Langage de programmation: C++
+* Langage de programmation: C++ (compilé sour QtCreator version 5.9.x)
 * Bibliothéques: 
     * glm (fonctions mathématiques)
     * Eigen (outils d'algèbre linéaire)
@@ -30,15 +21,14 @@ Projet réalisé dans le cadre de l'UE "Géométrie Numérique"
 
 | Classe  | Description |
 | -------- | -------- |
-| Cube | Représente un cube utilisé pour les "Marching cubes"
-| DisjointSets | Représente des ensembles disjoints |
-| Edge | Représente une arête |
-| Face | Représente une face |
-| Graph | Représente un graphe |
-| HalfEdge | Représente une structure demi-arête |
-| Mesh | Représente un ensemble de sommets + ensemble de faces |
+| DisjointSets | Représente des ensembles disjoints pour la création de MST (Kruskal) |
+| Edge | Représente une arête dans le modèle HalfEdge |
+| Face | Représente une face dans le modèle HalfEdge |
+| Graph | Représente un graphe non orienté |
+| HalfEdge | Représente une structure demi-arête dans le modèle HalfEdge |
+| Mesh | Représente un ensemble de sommets + ensemble de faces dans le modèle HalfEdge |
 | MeshReconstructor | Représente la reconstruction de surface maillée à partir d'un nuage de points |
 | Node | Représente un noeud du graphe |
-| Octree | Représente l'octree ( structure de données de type arbre dans laquelle chaque nœud peut compter jusqu'à huit enfants) |
-| Plane | Représente des plans (représentés par trois vecteurs) |
-| Vertex | Représente les points |
+| Octree | Représente l'octree ( structure de données de type arbre dans laquelle chaque nœud compte exactement huit fils) |
+| Plane | Représente les plans tangents (représentés par leur trois vecteurs propres) |
+| Vertex | Représente les sommets dans le modèle HalfEdge |
