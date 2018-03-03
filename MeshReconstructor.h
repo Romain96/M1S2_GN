@@ -8,11 +8,13 @@
  * 2018-2019
  */
 
-// glm
+// STD
+#include <vector>
+#include <cmath>
+
+// GLM
 #include "glm/glm.hpp"
 #include "glm/vec3.hpp"
-
-#include <vector>
 
 // Eigen
 #include "Eigen/Dense"
@@ -26,6 +28,19 @@
 #include "Graph.h"
 
 using namespace Eigen;
+
+// triangle structure used to represent a triangle (by representing 3 Vertices)
+typedef struct s_triangle
+{
+    Vertex p[3];
+} TRIANGLE;
+
+// structure used to represent a gridcell (8 vertices + 8 associated values)
+typedef struct s_gridcell
+{
+    Vertex p[8];
+    double val[8];
+} GRIDCELL;
 
 /**
  * @brief The MeshReconstructor class
@@ -43,6 +58,10 @@ private:
     float _p;
     // surface is supposed to be d-noisy
     float _d;
+    // subdivision factor (aka grid cell size for marching cubes algorithm)
+    float _subdivisionFactor;
+    // isolevel for marching cubes (aka level from which a point is considered inside/outside the isosurface)
+    double _isolevel;
 
 protected:
     // list of all vertices (point cloud)
@@ -70,6 +89,8 @@ public:
     float getSize();
     float getDense();
     float getNoisy();
+    float getSubdivisionFactor();
+    float getIsolevel();
     Octree *getPointTree();
     Octree *getCentroidTree();
     std::vector<Vertex *>& getCentroids();
@@ -82,6 +103,8 @@ public:
     void setSize(float size);
     void setDense(float p);
     void setNoisy(float d);
+    void setSubdivisionFactor(float factor);
+    void setIsolevel(float level);
     void setPointTree(Octree *t);
     void setCentroidTree(Octree *t);
     void setCentroids(std::vector<Vertex *>& centroids);
@@ -95,6 +118,11 @@ public:
     void buildCentroidTreeWithIterations();
     void buildCentroidTreeWithSize();
     void reorientateTangentPlanes();
+    // marching cubes
+    int polygonise(GRIDCELL grid, TRIANGLE *triangles);
+    Vertex vertexInterpolate(Vertex p1, Vertex p2, double valp1, double valp2);
+    void createIsosurface(Vertex lowerEnglobingVertex, Vertex upperEnglobingVertex);
+
 
     Vertex *__findNearestTangentPlaneAsCentroid(Vertex *p);
     float __signedDistanceToClosestTangentPlane(Vertex *p);

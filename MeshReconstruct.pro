@@ -25,9 +25,7 @@ SOURCES += main.cpp \
     Node.cpp \
     Edge.cpp \
     Graph.cpp \
-    DisjointSets.cpp \
-    Cube.cpp \
-    MarchingCubes.cpp
+    DisjointSets.cpp
 
 HEADERS += \
     Vertex.h \
@@ -40,6 +38,4 @@ HEADERS += \
     Node.h \
     Edge.h \
     Graph.h \
-    DisjointSets.h \
-    Cube.h \
-    MarchingCubes.h
+    DisjointSets.h
