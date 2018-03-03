@@ -466,6 +466,47 @@ bool Octree::isInside(Vertex *v, Octree *t)
 }
 
 /**
+ * @brief Octree::minDistance
+ * @param v point to test
+ * @param t node of the octree
+ * @return the minimal distance between v and a node of the octree
+ */
+float Octree::minDistance(Vertex *v, Octree *t)
+{
+    // computing the distance between v and each of the 8 vertices of the octree cube
+    float min = 10000.f;    // ~ infinity
+    float dist;
+
+    dist = Vertex::distance3(v->getPosition(), t->getBorderLowerNE());
+    if (dist < min)
+        min = dist;
+    dist = Vertex::distance3(v->getPosition(), t->getBorderLowerNW());
+    if (dist < min)
+        min = dist;
+    dist = Vertex::distance3(v->getPosition(), t->getBorderLowerSE());
+    if (dist < min)
+        min = dist;
+    dist = Vertex::distance3(v->getPosition(), t->getBorderLowerSW());
+    if (dist < min)
+        min = dist;
+
+    dist = Vertex::distance3(v->getPosition(), t->getBorderUpperNE());
+    if (dist < min)
+        min = dist;
+    dist = Vertex::distance3(v->getPosition(), t->getBorderUpperNW());
+    if (dist < min)
+        min = dist;
+    dist = Vertex::distance3(v->getPosition(), t->getBorderUpperSE());
+    if (dist < min)
+        min = dist;
+    dist = Vertex::distance3(v->getPosition(), t->getBorderUpperSW());
+    if (dist < min)
+        min = dist;
+
+    return dist;
+}
+
+/**
  * @brief Octree::setLeaf warning deletes each children
  */
 void Octree::setLeaf()

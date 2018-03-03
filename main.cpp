@@ -30,7 +30,7 @@ int main()
     mr.setK(10);
     mr.setIterations(2);
     // parameters : 0-dense, 0.05-noisy
-    mr.setDense(0.f);
+    mr.setDense(10000.f);
     mr.setNoisy(0.5f);
     mr.buildPointTreeWithIterations();
     mr.computeCentroidsAndTangentPlanes();
@@ -38,7 +38,7 @@ int main()
     mr.reorientateTangentPlanes();
     // marching cube parameters : isolevel = 0, cell size 0.5
     mr.setIsolevel(0.f);
-    mr.setSubdivisionFactor(0.5f);
+    mr.setSubdivisionFactor(1.f);
     mr.createIsosurface();
 
     // reading test

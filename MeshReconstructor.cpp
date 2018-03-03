@@ -451,6 +451,7 @@ Vertex *MeshReconstructor::__findNearestTangentPlaneAsCentroid(Vertex *p)
     // whom associated centroid is the closest to p
     // thus using the centroid octree to quicken the search
 
+    /*
     // first searching in which leaf of the centroid octree is p
     Octree *t = _centroidTree;
     while (!t->leaf())
@@ -506,6 +507,20 @@ Vertex *MeshReconstructor::__findNearestTangentPlaneAsCentroid(Vertex *p)
         if (dist < distMin)
         {
             distMin = dist;
+            closestCentroid = (*it);
+        }
+    }*/
+
+    // TEST WITHOUT OCTREE
+    std::vector<Vertex *>::iterator it;
+    Vertex *closestCentroid = nullptr;
+    float minDist = 1000000.f;
+    for (it = _centroids.begin(); it != _centroids.end(); it++)
+    {
+        float dist = Vertex::distance3(p->getPosition(), (*it)->getPosition());
+        if (dist < minDist)
+        {
+            minDist = dist;
             closestCentroid = (*it);
         }
     }
@@ -959,6 +974,11 @@ void MeshReconstructor::createIsosurface()
     glm::vec3 upperEnglobingVertex = _centroidTree->getBorderUpperNE();
 
     std::cout << "Marching cubes algorithm..." << std::endl;
+    std::cout << "from " << lowerEnglobingVertex.x << ", " << lowerEnglobingVertex.y << ", " << lowerEnglobingVertex.z << " to "
+              << upperEnglobingVertex.x << ", " << upperEnglobingVertex.y << ", " << upperEnglobingVertex.z << std::endl;
+    std::cout << " with an increment of " << _subdivisionFactor << std::endl;
+    int nb = 0;
+    std::vector<TRIANGLE> triangles;
 
     GRIDCELL cell;
     float minX = lowerEnglobingVertex.x;
@@ -1007,7 +1027,11 @@ void MeshReconstructor::createIsosurface()
 
                 TRIANGLE res[5];
                 int n = polygonise(cell, res);
-                std::cout << n << " triangles created" << std::endl;
+                //std::cout << n << " triangles created" << std::endl;
+                nb += n;
+
+                for (int i = 0; i < n; i++)
+                    triangles.push_back(res[i]);
 
                 // next cube position
                 minX += _subdivisionFactor;
@@ -1019,4 +1043,16 @@ void MeshReconstructor::createIsosurface()
             }
         }
     }
+    std::cout << nb << " triangles created" << std::endl;
+    for (unsigned int i = 0; i < triangles.size(); i++)
+    {
+        std::cout << "triangle " << i << " : " << std::endl;
+        std::cout << "\t" << triangles[i].p[0].getX() << "," << triangles[i].p[0].getY() << "," << triangles[i].p[0].getZ() << std::endl;
+        std::cout << "\t" << triangles[i].p[1].getX() << "," << triangles[i].p[1].getY() << "," << triangles[i].p[1].getZ() << std::endl;
+        std::cout << "\t" << triangles[i].p[2].getX() << "," << triangles[i].p[2].getY() << "," << triangles[i].p[2].getZ() << std::endl;
+    }
+
+    std::cout << "creating vertices and triangles" << std::endl;
+
+    std::cout << "done" << std::endl;
 }

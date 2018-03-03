@@ -125,6 +125,7 @@ public:
     std::vector<std::pair<Vertex *, float>>& findKNeartestNeighbours(Vertex *ref, int k);
 
     static bool isInside(Vertex *v, Octree *t);
+    static float minDistance(Vertex *v, Octree *t);
 
 private:
     // internal method(s)
