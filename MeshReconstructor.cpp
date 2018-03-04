@@ -381,6 +381,8 @@ void MeshReconstructor::buildCentroidTreeWithIterations()
     _centroidTree = new Octree();
     _centroidTree->findSpaceBorders(_centroids);
     _centroidTree->constructWithIterations(_iterations, _centroids);
+    // we can remove the Octree on points since from new we use this one on centroids
+    delete _pointTree;
 }
 
 /**
@@ -391,6 +393,8 @@ void MeshReconstructor::buildCentroidTreeWithSize()
     _centroidTree = new Octree();
     _centroidTree->findSpaceBorders(_centroids);
     _centroidTree->constructWithMinSize(_size, _centroids);
+    // we can remove the Octree on points since from new we use this one on centroids
+    delete _pointTree;
 }
 
 /**
@@ -988,6 +992,10 @@ void MeshReconstructor::createIsosurface()
     float maxY = lowerEnglobingVertex.y + _subdivisionFactor;
     float maxZ = lowerEnglobingVertex.z + _subdivisionFactor;
 
+    // reconstruct mesh
+    std::vector<Vertex *> vertices;
+    std::vector<Face *> faces;
+
     // for each cube in the surface englobing cube
     for (float x = lowerEnglobingVertex.x + _subdivisionFactor; x < upperEnglobingVertex.x; x += _subdivisionFactor)
     {
@@ -1029,9 +1037,77 @@ void MeshReconstructor::createIsosurface()
                 int n = polygonise(cell, res);
                 //std::cout << n << " triangles created" << std::endl;
                 nb += n;
+                int id = 0;
+                int fid = 0;
 
                 for (int i = 0; i < n; i++)
-                    triangles.push_back(res[i]);
+                {
+                    //triangles.push_back(res[i]);
+                    // adding each points if not already present
+                    int pos1 = -1;
+                    int pos2 = -1;
+                    int pos3 = -1;
+
+                    glm::vec3 pt1 = res[i].p[0].getPosition();
+                    glm::vec3 pt2 = res[i].p[1].getPosition();
+                    glm::vec3 pt3 = res[i].p[2].getPosition();
+
+                    for (unsigned int i = 0; i < vertices.size(); i++)
+                    {
+                        if (pt1.x == vertices[i]->getX() && pt1.y == vertices[i]->getY() && pt1.z == vertices[i]->getZ())
+                            pos1 = i;
+                        if (pt2.x == vertices[i]->getX() && pt2.y == vertices[i]->getY() && pt2.z == vertices[i]->getZ())
+                            pos2 = i;
+                        if (pt3.x == vertices[i]->getX() && pt3.y == vertices[i]->getY() && pt3.z == vertices[i]->getZ())
+                            pos3 = i;
+                    }
+
+                    // now pos1 pos2 and pos3 contains either -1 if the point is not already in vertices
+                    // or a number >= 0 that indicates which point it is in vertices
+                    Face *f = new Face(fid++);
+
+                    if (pos1 == -1)
+                    {
+                        // adding the new point
+                        vertices.push_back(new Vertex(id++, res[i].p[0].getX(), res[i].p[0].getY(), res[i].p[0].getZ()));
+                        // adding the last inserted vertex as a point of this face
+                        f->addVertex(vertices[vertices.size() - 1]);
+                    }
+                    else
+                    {
+                        // adding the vertex at index pos1 as a point of this face
+                        f->addVertex(vertices[pos1]);
+                    }
+
+                    if (pos2 == -1)
+                    {
+                        // adding the new point
+                        vertices.push_back(new Vertex(id++, res[i].p[1].getX(), res[i].p[1].getY(), res[i].p[1].getZ()));
+                        // adding the last inserted vertex as a point of this face
+                        f->addVertex(vertices[vertices.size() - 1]);
+                    }
+                    else
+                    {
+                        // adding the vertex at index pos1 as a point of this face
+                        f->addVertex(vertices[pos2]);
+                    }
+
+                    if (pos3 == -1)
+                    {
+                        // adding the new point
+                        vertices.push_back(new Vertex(id++, res[i].p[2].getX(), res[i].p[2].getY(), res[i].p[2].getZ()));
+                        // adding the last inserted vertex as a point of this face
+                        f->addVertex(vertices[vertices.size() - 1]);
+                    }
+                    else
+                    {
+                        // adding the vertex at index pos1 as a point of this face
+                        f->addVertex(vertices[pos3]);
+                    }
+
+                    // adding the face
+                    faces.push_back(f);
+                }
 
                 // next cube position
                 minX += _subdivisionFactor;
@@ -1043,6 +1119,7 @@ void MeshReconstructor::createIsosurface()
             }
         }
     }
+    /*
     std::cout << nb << " triangles created" << std::endl;
     for (unsigned int i = 0; i < triangles.size(); i++)
     {
@@ -1050,9 +1127,10 @@ void MeshReconstructor::createIsosurface()
         std::cout << "\t" << triangles[i].p[0].getX() << "," << triangles[i].p[0].getY() << "," << triangles[i].p[0].getZ() << std::endl;
         std::cout << "\t" << triangles[i].p[1].getX() << "," << triangles[i].p[1].getY() << "," << triangles[i].p[1].getZ() << std::endl;
         std::cout << "\t" << triangles[i].p[2].getX() << "," << triangles[i].p[2].getY() << "," << triangles[i].p[2].getZ() << std::endl;
-    }
+    }*/
 
-    std::cout << "creating vertices and triangles" << std::endl;
+    std::cout << vertices.size() << " vertices created" << std::endl;
+    std::cout << faces.size() << " faces created" << std::endl;
 
     std::cout << "done" << std::endl;
 }
