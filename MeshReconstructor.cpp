@@ -961,8 +961,9 @@ Vertex MeshReconstructor::vertexInterpolate(Vertex p1, Vertex p2, double valp1, 
 
 /**
  * @brief MeshReconstructor::createIsosurface
+ * @return a reconstructed Mesh
  */
-void MeshReconstructor::createIsosurface()
+Mesh &MeshReconstructor::createIsosurface()
 {
     // convention of vertex index used is the following  :
     // 0 : lower south east vertex
@@ -993,6 +994,7 @@ void MeshReconstructor::createIsosurface()
     float maxZ = lowerEnglobingVertex.z + _subdivisionFactor;
 
     // reconstruct mesh
+    static Mesh m;
     std::vector<Vertex *> vertices;
     std::vector<Face *> faces;
 
@@ -1119,18 +1121,10 @@ void MeshReconstructor::createIsosurface()
             }
         }
     }
-    /*
-    std::cout << nb << " triangles created" << std::endl;
-    for (unsigned int i = 0; i < triangles.size(); i++)
-    {
-        std::cout << "triangle " << i << " : " << std::endl;
-        std::cout << "\t" << triangles[i].p[0].getX() << "," << triangles[i].p[0].getY() << "," << triangles[i].p[0].getZ() << std::endl;
-        std::cout << "\t" << triangles[i].p[1].getX() << "," << triangles[i].p[1].getY() << "," << triangles[i].p[1].getZ() << std::endl;
-        std::cout << "\t" << triangles[i].p[2].getX() << "," << triangles[i].p[2].getY() << "," << triangles[i].p[2].getZ() << std::endl;
-    }*/
-
     std::cout << vertices.size() << " vertices created" << std::endl;
     std::cout << faces.size() << " faces created" << std::endl;
+
+
 
     std::cout << "done" << std::endl;
 }

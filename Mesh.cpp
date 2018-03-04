@@ -107,6 +107,24 @@ float& Mesh::getTaubinMu()
 //-----------------------------------------------------------------------------
 
 /**
+ * @brief Mesh::setVertices
+ * @param vertices new list of vertices
+ */
+void Mesh::setVertices(std::vector<Vertex *> &vertices)
+{
+    _vertices = vertices;
+}
+
+/**
+ * @brief Mesh::setFaces
+ * @param faces new list of faces
+ */
+void Mesh::setFaces(std::vector<Face *> &faces)
+{
+    _faces = faces;
+}
+
+/**
  * @brief Mesh::setLaplacianLambda
  * @param lambda new lambda coefficient used in the laplacianSmoothing method
  */

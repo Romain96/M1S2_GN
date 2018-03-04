@@ -50,6 +50,8 @@ public:
     float& getTaubinMu();
 
     // setters
+    void setVertices(std::vector<Vertex *>& vertices);
+    void setFaces(std::vector<Face *>& faces);
     void setLaplacianLambda(float lambda);
     void setLaplacianIteration(unsigned int k);
     void setTaubinMu(float mu);
