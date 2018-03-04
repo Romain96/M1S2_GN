@@ -414,6 +414,7 @@ void MeshReconstructor::reorientateTangentPlanes()
 
     // Step 1 : Full connected graph (Euclidian distance on centroids)
     std::cout << "building a full Euclidian connected graph..." << std::endl;
+    _graph = new Graph();
     _graph->buildEuclidianGraph(_centroids, _planes);
     std::cout << "done" << std::endl;
 
@@ -997,6 +998,8 @@ Mesh &MeshReconstructor::createIsosurface()
     static Mesh m;
     std::vector<Vertex *> vertices;
     std::vector<Face *> faces;
+    int id = 0;
+    int fid = 0;
 
     // for each cube in the surface englobing cube
     for (float x = lowerEnglobingVertex.x + _subdivisionFactor; x < upperEnglobingVertex.x; x += _subdivisionFactor)
@@ -1039,8 +1042,6 @@ Mesh &MeshReconstructor::createIsosurface()
                 int n = polygonise(cell, res);
                 //std::cout << n << " triangles created" << std::endl;
                 nb += n;
-                int id = 0;
-                int fid = 0;
 
                 for (int i = 0; i < n; i++)
                 {
@@ -1124,7 +1125,10 @@ Mesh &MeshReconstructor::createIsosurface()
     std::cout << vertices.size() << " vertices created" << std::endl;
     std::cout << faces.size() << " faces created" << std::endl;
 
-
+    m.setVertices(vertices);
+    m.setFaces(faces);
 
     std::cout << "done" << std::endl;
+
+    return m;
 }

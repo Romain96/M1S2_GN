@@ -383,15 +383,12 @@ void Graph::__buildNodes(std::vector<Vertex *> &centroids, std::vector<Plane *> 
     // centroids and tangent planes are stored in the same order points were
     // so the resulting node list will be ordered as so
 
-    Node *n;
     std::vector<Vertex *>::iterator centroidIterator = centroids.begin();
     std::vector<Plane *>::iterator planeIterator = planes.begin();
-    _nodes.clear();
 
     while (centroidIterator != centroids.end() && planeIterator != planes.end())
     {
-        n = new Node((*centroidIterator),(*planeIterator));
-        _nodes.push_back(n);
+        _nodes.push_back(new Node((*centroidIterator),(*planeIterator)));
 
         centroidIterator++;
         planeIterator++;

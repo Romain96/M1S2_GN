@@ -36,13 +36,12 @@ int main()
     mr.buildPointTreeWithIterations();
     mr.computeCentroidsAndTangentPlanes();
     mr.buildCentroidTreeWithIterations();
-    /*
     mr.reorientateTangentPlanes();
-    */
     // marching cube parameters : isolevel = 0, cell size 0.5
     mr.setIsolevel(0.f);
     mr.setSubdivisionFactor(1.f);
-    mr.createIsosurface();
+    Mesh rm = mr.createIsosurface();
+    rm.exportOFF("test.off");
 
     // reading test
     //m.importOFF("../OFF/block.off");
